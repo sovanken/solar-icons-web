@@ -142,3 +142,42 @@
     background: color-mix(in oklab, currentColor 30%, transparent);
   }
 }
+
+/* Icon-card entrance animation ------------------------------------------- */
+@keyframes card-in {
+  from { opacity: 0; transform: translateY(6px) scale(0.96); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+.icon-card-anim { animation: card-in 0.28s cubic-bezier(0.16, 1, 0.3, 1) both; }
+
+/* Skeleton shimmer ------------------------------------------------------- */
+@keyframes shimmer {
+  0%   { background-position: -420px 0; }
+  100% { background-position: 420px 0; }
+}
+.skeleton {
+  background: linear-gradient(
+    90deg,
+    color-mix(in oklab, currentColor 6%, transparent) 0%,
+    color-mix(in oklab, currentColor 12%, transparent) 50%,
+    color-mix(in oklab, currentColor 6%, transparent) 100%
+  );
+  background-size: 840px 100%;
+  animation: shimmer 1.8s linear infinite;
+}
+
+/* Grid fade-in on category / style change ------------------------------- */
+@keyframes grid-fade {
+  from { opacity: 0.4; }
+  to   { opacity: 1; }
+}
+.grid-fade { animation: grid-fade 0.25s ease-out both; }
+
+/* Motion-reduce fallback: kill animations if user asks */
+@media (prefers-reduced-motion: reduce) {
+  .icon-card-anim,
+  .skeleton,
+  .grid-fade {
+    animation: none !important;
+  }
+}

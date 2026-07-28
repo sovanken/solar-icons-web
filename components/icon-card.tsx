@@ -18,7 +18,7 @@ export function IconCard({ base, category, suffix, onClick }: Props) {
     <button
       onClick={() => onClick(base, category)}
       className={cn(
-        "group relative flex flex-col items-center justify-center gap-3 rounded-xl border border-border/60 bg-card p-3.5",
+        "icon-card-anim group relative flex flex-col items-center justify-center gap-3 rounded-xl border border-border/60 bg-card p-3.5",
         "transition-all duration-150 hover:-translate-y-0.5 hover:border-foreground/30 hover:shadow-md",
         "cursor-pointer overflow-hidden",
       )}

@@ -64,7 +64,7 @@ export function IconGrid({ collection }: Props) {
           </div>
         ) : (
           <div
-            className="grid gap-2.5"
+            className="grid-fade grid gap-2.5"
             style={{ gridTemplateColumns: "repeat(auto-fill, minmax(110px, 1fr))" }}
           >
             {visible.map((item) => (

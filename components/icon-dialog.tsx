@@ -15,9 +15,7 @@ import {
   downloadBlob,
   downloadPngZip,
   downloadString,
-  svgToBase64,
   svgToCssBackground,
-  svgToDataUri,
   svgToFlutter,
   svgToFlutterFull,
   svgToHtml,
@@ -40,8 +38,6 @@ type CopyKind =
   | "flutter"
   | "flutter-full"
   | "html"
-  | "data-uri"
-  | "base64"
   | "css-bg"
   | "iconify-tag"
   | "name";
@@ -53,8 +49,6 @@ const COPY_OPTIONS: { id: CopyKind; label: string; icon: string; desc: string }[
   { id: "flutter", label: "Flutter", icon: "solar:programming-bold-duotone", desc: "SolarIcon widget (short)" },
   { id: "flutter-full", label: "Flutter (full)", icon: "solar:medal-star-bold-duotone", desc: "SolarIcon with size + color" },
   { id: "html", label: "HTML", icon: "solar:code-square-bold-duotone", desc: "Standalone HTML doc" },
-  { id: "data-uri", label: "Data URI", icon: "solar:link-bold-duotone", desc: "Base64 SVG data URI" },
-  { id: "base64", label: "Base64", icon: "solar:key-bold-duotone", desc: "Raw base64 string" },
   { id: "css-bg", label: "CSS Background", icon: "solar:paint-roller-bold-duotone", desc: "background-image CSS" },
   { id: "iconify-tag", label: "Iconify Tag", icon: "solar:widget-bold-duotone", desc: "<iconify-icon> element" },
   { id: "name", label: "Icon Name", icon: "solar:tag-bold-duotone", desc: "Iconify identifier" },
@@ -105,8 +99,6 @@ export function IconDialog({ selected, onClose }: Props) {
       flutter: svgToFlutter(selected.base, variant),
       "flutter-full": svgToFlutterFull(selected.base, variant, size, "#6366F1"),
       html: svgToHtml(svgSource, selected.base),
-      "data-uri": svgToDataUri(svgSource, true),
-      base64: svgToBase64(svgSource),
       "css-bg": svgToCssBackground(svgSource),
       "iconify-tag": `<iconify-icon icon="${iconName}"></iconify-icon>`,
       name: iconName,
@@ -212,7 +204,12 @@ export function IconDialog({ selected, onClose }: Props) {
                         : "border-border text-muted-foreground hover:text-foreground hover:border-foreground/40 hover:bg-muted/40",
                     )}
                   >
-                    <Icon icon={`${PREFIX}:${selected.base}${s.suffix}`} className="h-5 w-5" />
+                    <Icon
+                      icon={`${PREFIX}:${selected.base}${s.suffix}`}
+                      width={22}
+                      height={22}
+                      style={{ color: "currentColor" }}
+                    />
                   </button>
                 );
               })}
@@ -228,6 +225,8 @@ export function IconDialog({ selected, onClose }: Props) {
               <Icon icon={iconName} className="h-40 w-40" />
             </div>
           </div>
+
+          <UsageStrip iconName={iconName} />
 
           <Tabs defaultValue="copy" className="mt-5">
             <TabsList className="grid w-full grid-cols-3">
@@ -330,6 +329,60 @@ export function IconDialog({ selected, onClose }: Props) {
         </div>
       </DialogContent>
     </Dialog>
+  );
+}
+
+function UsageStrip({ iconName }: { iconName: string }) {
+  return (
+    <div className="mt-4">
+      <div className="mb-2 text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
+        Preview in context
+      </div>
+      <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
+        {/* Menu item — like a dropdown option */}
+        <div className="rounded-xl border border-border bg-card p-3">
+          <div className="mb-1.5 text-[9px] font-medium uppercase tracking-wider text-muted-foreground">
+            Menu
+          </div>
+          <div className="flex items-center gap-2.5">
+            <Icon icon={iconName} width={18} height={18} className="text-foreground/80" />
+            <span className="text-[13px]">Edit</span>
+          </div>
+        </div>
+
+        {/* Sidebar item — active/highlighted */}
+        <div className="rounded-xl border border-border bg-card p-3">
+          <div className="mb-1.5 text-[9px] font-medium uppercase tracking-wider text-muted-foreground">
+            Sidebar
+          </div>
+          <div className="flex items-center gap-2.5 rounded-lg bg-muted px-2 py-1.5 -mx-1">
+            <Icon icon={iconName} width={18} height={18} className="text-foreground" />
+            <span className="text-[13px] font-medium">Dashboard</span>
+          </div>
+        </div>
+
+        {/* Filled button */}
+        <div className="rounded-xl border border-border bg-card p-3">
+          <div className="mb-1.5 text-[9px] font-medium uppercase tracking-wider text-muted-foreground">
+            Button
+          </div>
+          <div className="inline-flex items-center gap-1.5 rounded-lg bg-foreground text-background px-3 py-1.5">
+            <Icon icon={iconName} width={16} height={16} style={{ color: "currentColor" }} />
+            <span className="text-[12px] font-semibold">Continue</span>
+          </div>
+        </div>
+
+        {/* Icon-only toolbar tile */}
+        <div className="rounded-xl border border-border bg-card p-3">
+          <div className="mb-1.5 text-[9px] font-medium uppercase tracking-wider text-muted-foreground">
+            Toolbar
+          </div>
+          <div className="grid h-9 w-9 place-items-center rounded-lg border border-border bg-muted/40">
+            <Icon icon={iconName} width={20} height={20} className="text-foreground/80" />
+          </div>
+        </div>
+      </div>
+    </div>
   );
 }
 

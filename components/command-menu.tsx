@@ -43,7 +43,11 @@ export function CommandMenu({ categories, order }: Props) {
               setCommandOpen(false);
             }}
           >
-            <Icon icon="solar:widget-5-linear" className="mr-2 h-4 w-4" /> All Icons
+            <Icon
+              icon="solar:widget-5-bold-duotone"
+              className="mr-2 h-4 w-4 shrink-0"
+            />
+            <span className="flex-1 truncate">All Icons</span>
           </CommandItem>
           {order.map((cat) => (
             <CommandItem
@@ -53,8 +57,12 @@ export function CommandMenu({ categories, order }: Props) {
                 setCommandOpen(false);
               }}
             >
-              <Icon icon="solar:folder-linear" className="mr-2 h-4 w-4" /> {cat}
-              <span className="ml-auto text-xs text-muted-foreground">
+              <Icon
+                icon="solar:folder-bold-duotone"
+                className="mr-2 h-4 w-4 shrink-0"
+              />
+              <span className="flex-1 truncate">{cat}</span>
+              <span className="ml-2 min-w-[40px] shrink-0 text-right text-xs text-muted-foreground tabular-nums">
                 {categories[cat].length}
               </span>
             </CommandItem>
@@ -71,9 +79,14 @@ export function CommandMenu({ categories, order }: Props) {
                 setCommandOpen(false);
               }}
             >
-              <Icon icon={`${PREFIX}:${base}${BASE_SUFFIX}`} className="mr-2 h-4 w-4" />
-              <span className="font-mono text-xs">{base}</span>
-              <span className="ml-auto text-[10px] text-muted-foreground">{category}</span>
+              <Icon
+                icon={`${PREFIX}:${base}${BASE_SUFFIX}`}
+                className="mr-2 h-4 w-4 shrink-0"
+              />
+              <span className="flex-1 truncate font-mono text-xs">{base}</span>
+              <span className="ml-2 max-w-[140px] shrink-0 truncate text-right text-[10px] text-muted-foreground">
+                {category}
+              </span>
             </CommandItem>
           ))}
         </CommandGroup>
