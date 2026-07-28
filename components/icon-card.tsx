@@ -1,0 +1,48 @@
+"use client";
+
+import { Icon } from "@iconify/react";
+import { cn } from "@/lib/utils";
+import { PREFIX } from "@/lib/libraries";
+
+interface Props {
+  base: string;
+  category: string;
+  suffix: string;
+  onClick: (base: string, category: string) => void;
+}
+
+export function IconCard({ base, category, suffix, onClick }: Props) {
+  const iconName = `${PREFIX}:${base}${suffix}`;
+
+  return (
+    <button
+      onClick={() => onClick(base, category)}
+      className={cn(
+        "group relative flex flex-col items-center justify-center gap-3 rounded-xl border border-border/60 bg-card p-3.5",
+        "transition-all duration-150 hover:-translate-y-0.5 hover:border-foreground/30 hover:shadow-md",
+        "cursor-pointer overflow-hidden",
+      )}
+      style={{
+        minHeight: "calc(var(--icon-size, 48px) + 60px)",
+        contentVisibility: "auto",
+        containIntrinsicSize: "auto calc(var(--icon-size, 48px) + 60px)",
+      }}
+      title={base}
+    >
+      <div className="absolute inset-0 bg-gradient-to-br from-transparent to-foreground/[0.04] opacity-0 group-hover:opacity-100 transition-opacity" />
+      <div
+        className="relative z-10 grid place-items-center transition-transform group-hover:scale-110"
+        style={{ height: "var(--icon-size, 48px)", width: "var(--icon-size, 48px)" }}
+      >
+        <Icon
+          icon={iconName}
+          className="text-foreground"
+          style={{ fontSize: "var(--icon-size, 48px)", width: "1em", height: "1em" }}
+        />
+      </div>
+      <span className="relative z-10 max-w-full truncate font-mono text-[10px] text-muted-foreground">
+        {base}
+      </span>
+    </button>
+  );
+}
