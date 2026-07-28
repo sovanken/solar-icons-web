@@ -19,7 +19,8 @@ interface Props {
 }
 
 export function CommandMenu({ categories, order }: Props) {
-  const { commandOpen, setCommandOpen, setActiveCategory, setFilter } = useStore();
+  const { commandOpen, setCommandOpen, setActiveCategory, setSelected } =
+    useStore();
 
   const flatIcons = useMemo(() => {
     const list: { base: string; category: string }[] = [];
@@ -74,8 +75,7 @@ export function CommandMenu({ categories, order }: Props) {
               key={`${category}-${base}`}
               value={`${base} ${category}`}
               onSelect={() => {
-                setFilter(base);
-                setActiveCategory(category);
+                setSelected({ base, category });
                 setCommandOpen(false);
               }}
             >

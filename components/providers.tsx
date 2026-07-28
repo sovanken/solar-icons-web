@@ -8,7 +8,7 @@ import { StoreProvider } from "@/lib/store";
 export function Providers({ children }: { children: React.ReactNode }) {
   return (
     <ThemeProvider attribute="class" defaultTheme="dark" enableSystem disableTransitionOnChange>
-      <TooltipProvider delayDuration={200}>
+      <TooltipProvider delay={200}>
         <StoreProvider>
           {children}
           <Toaster position="bottom-center" theme="system" richColors />

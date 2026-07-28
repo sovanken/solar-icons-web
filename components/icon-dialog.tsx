@@ -15,47 +15,31 @@ import {
   downloadBlob,
   downloadPngZip,
   downloadString,
-  svgToCssBackground,
   svgToFlutter,
   svgToFlutterFull,
-  svgToHtml,
   svgToJpgBlob,
-  svgToJsx,
   svgToPngBlob,
-  svgToVue,
   svgToWebpBlob,
 } from "@/lib/converters";
 
-interface Props {
-  selected: { base: string; category: string } | null;
-  onClose: () => void;
-}
-
 type CopyKind =
   | "svg"
-  | "jsx"
-  | "vue"
   | "flutter"
   | "flutter-full"
-  | "html"
-  | "css-bg"
   | "iconify-tag"
   | "name";
 
 const COPY_OPTIONS: { id: CopyKind; label: string; icon: string; desc: string }[] = [
-  { id: "svg", label: "SVG", icon: "solar:code-bold-duotone", desc: "Raw SVG markup" },
-  { id: "jsx", label: "React JSX", icon: "solar:atom-bold-duotone", desc: "React component .tsx" },
-  { id: "vue", label: "Vue SFC", icon: "solar:layers-bold-duotone", desc: "Vue single-file component" },
   { id: "flutter", label: "Flutter", icon: "solar:programming-bold-duotone", desc: "SolarIcon widget (short)" },
   { id: "flutter-full", label: "Flutter (full)", icon: "solar:medal-star-bold-duotone", desc: "SolarIcon with size + color" },
-  { id: "html", label: "HTML", icon: "solar:code-square-bold-duotone", desc: "Standalone HTML doc" },
-  { id: "css-bg", label: "CSS Background", icon: "solar:paint-roller-bold-duotone", desc: "background-image CSS" },
+  { id: "svg", label: "SVG", icon: "solar:code-bold-duotone", desc: "Raw SVG markup" },
   { id: "iconify-tag", label: "Iconify Tag", icon: "solar:widget-bold-duotone", desc: "<iconify-icon> element" },
   { id: "name", label: "Icon Name", icon: "solar:tag-bold-duotone", desc: "Iconify identifier" },
 ];
 
-export function IconDialog({ selected, onClose }: Props) {
-  const { viewStyle, size } = useStore();
+export function IconDialog() {
+  const { viewStyle, size, selected, setSelected } = useStore();
+  const onClose = () => setSelected(null);
   const [variant, setVariant] = useState<string>(viewStyle);
   const [svgSource, setSvgSource] = useState<string>("");
   const [loading, setLoading] = useState(false);
@@ -93,13 +77,9 @@ export function IconDialog({ selected, onClose }: Props) {
   const copyPayloads = useMemo<Record<CopyKind, string>>(() => {
     if (!svgSource || !selected) return {} as Record<CopyKind, string>;
     return {
-      svg: svgSource,
-      jsx: svgToJsx(svgSource, selected.base),
-      vue: svgToVue(svgSource, selected.base),
       flutter: svgToFlutter(selected.base, variant),
       "flutter-full": svgToFlutterFull(selected.base, variant, size, "#6366F1"),
-      html: svgToHtml(svgSource, selected.base),
-      "css-bg": svgToCssBackground(svgSource),
+      svg: svgSource,
       "iconify-tag": `<iconify-icon icon="${iconName}"></iconify-icon>`,
       name: iconName,
     };
@@ -171,8 +151,10 @@ export function IconDialog({ selected, onClose }: Props) {
   return (
     <Dialog open={!!selected} onOpenChange={(o) => !o && onClose()}>
       <DialogContent className="sm:max-w-3xl w-[95vw] p-0 gap-0 overflow-hidden max-h-[92vh] flex flex-col">
-        <div className="border-b border-border p-6 pb-4 shrink-0">
-          <DialogTitle className="font-mono text-sm truncate">{iconName}</DialogTitle>
+        <div className="border-b border-border p-4 sm:p-6 pb-3 sm:pb-4 shrink-0">
+          <DialogTitle className="font-mono text-xs sm:text-sm truncate pr-8">
+            {iconName}
+          </DialogTitle>
           <DialogDescription className="mt-1 flex flex-wrap items-center gap-1.5">
             <Badge variant="secondary" className="rounded-full text-[10px]">
               Solar
@@ -187,9 +169,9 @@ export function IconDialog({ selected, onClose }: Props) {
 
         </div>
 
-        <div className="p-6 overflow-y-auto flex-1 min-h-0">
-          <div className="flex gap-3">
-            <div className="flex flex-col gap-1.5 shrink-0">
+        <div className="p-4 sm:p-6 overflow-y-auto flex-1 min-h-0">
+          <div className="flex flex-col-reverse sm:flex-row gap-3">
+            <div className="flex flex-row sm:flex-col gap-1.5 shrink-0 overflow-x-auto sm:overflow-visible">
               {STYLES.map((s) => {
                 const active = variant === s.id;
                 return (
@@ -198,7 +180,7 @@ export function IconDialog({ selected, onClose }: Props) {
                     onClick={() => setVariant(s.id)}
                     title={s.label}
                     className={cn(
-                      "grid h-11 w-11 place-items-center rounded-lg border transition-all",
+                      "grid h-11 w-11 shrink-0 place-items-center rounded-lg border transition-all",
                       active
                         ? "bg-foreground text-background border-foreground shadow-sm"
                         : "border-border text-muted-foreground hover:text-foreground hover:border-foreground/40 hover:bg-muted/40",
@@ -215,14 +197,14 @@ export function IconDialog({ selected, onClose }: Props) {
               })}
             </div>
             <div
-              className="flex-1 grid place-items-center rounded-xl border border-border bg-muted/40 min-h-[280px] relative overflow-hidden"
+              className="flex-1 grid place-items-center rounded-xl border border-border bg-muted/40 min-h-[200px] sm:min-h-[280px] relative overflow-hidden"
               style={{
                 backgroundImage:
                   "linear-gradient(to right, color-mix(in oklab, currentColor 4%, transparent) 1px, transparent 1px), linear-gradient(to bottom, color-mix(in oklab, currentColor 4%, transparent) 1px, transparent 1px)",
                 backgroundSize: "24px 24px",
               }}
             >
-              <Icon icon={iconName} className="h-40 w-40" />
+              <Icon icon={iconName} className="h-28 w-28 sm:h-40 sm:w-40" />
             </div>
           </div>
 

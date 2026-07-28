@@ -1,11 +1,10 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useMemo } from "react";
 import { useStore } from "@/lib/store";
 import { type CollectionData } from "@/lib/iconify";
 import { STYLE_MAP } from "@/lib/libraries";
 import { IconCard } from "./icon-card";
-import { IconDialog } from "./icon-dialog";
 import { Icon } from "@iconify/react";
 import { Badge } from "@/components/ui/badge";
 
@@ -19,8 +18,7 @@ interface VisibleItem {
 }
 
 export function IconGrid({ collection }: Props) {
-  const { viewStyle, activeCategory, filter } = useStore();
-  const [selected, setSelected] = useState<{ base: string; category: string } | null>(null);
+  const { viewStyle, activeCategory, filter, setSelected } = useStore();
 
   const activeStyle = STYLE_MAP[viewStyle];
   const suffix = activeStyle?.suffix ?? "";
@@ -41,19 +39,21 @@ export function IconGrid({ collection }: Props) {
 
   return (
     <div className="flex-1 overflow-y-auto">
-      <div className="mx-auto max-w-[1400px] px-6 py-8">
-        <header className="mb-6">
-          <div className="flex items-center gap-3 flex-wrap">
-            <h1 className="text-2xl font-bold tracking-tight">{title}</h1>
-            <Badge variant="outline" className="rounded-full font-medium">
+      <div className="mx-auto max-w-[1400px] px-4 sm:px-6 py-5 sm:py-8">
+        <header className="mb-4 sm:mb-6">
+          <div className="flex items-center gap-2 sm:gap-3 flex-wrap">
+            <h1 className="text-xl sm:text-2xl font-bold tracking-tight">
+              {title}
+            </h1>
+            <Badge variant="outline" className="rounded-full font-medium text-[10px] sm:text-xs">
               Solar · {styleLabel}
             </Badge>
-            <Badge variant="secondary" className="rounded-full">
+            <Badge variant="secondary" className="rounded-full text-[10px] sm:text-xs">
               {visible.length.toLocaleString()} icons
             </Badge>
           </div>
-          <p className="mt-1.5 text-sm text-muted-foreground">
-            Explore {visible.length.toLocaleString()} icons in Solar {styleLabel} · click any icon to preview, copy, or download
+          <p className="mt-1.5 text-xs sm:text-sm text-muted-foreground">
+            {visible.length.toLocaleString()} icons in {styleLabel} · tap any icon to preview and export
           </p>
         </header>
 
@@ -64,8 +64,7 @@ export function IconGrid({ collection }: Props) {
           </div>
         ) : (
           <div
-            className="grid-fade grid gap-2.5"
-            style={{ gridTemplateColumns: "repeat(auto-fill, minmax(110px, 1fr))" }}
+            className="grid-fade grid gap-2 sm:gap-2.5 grid-cols-[repeat(auto-fill,minmax(84px,1fr))] sm:grid-cols-[repeat(auto-fill,minmax(110px,1fr))]"
           >
             {visible.map((item) => (
               <IconCard
@@ -80,7 +79,6 @@ export function IconGrid({ collection }: Props) {
         )}
       </div>
 
-      <IconDialog selected={selected} onClose={() => setSelected(null)} />
     </div>
   );
 }

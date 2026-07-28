@@ -1,14 +1,22 @@
 "use client";
 
+import Link from "next/link";
 import { Icon } from "@iconify/react";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
 import { ThemeToggle } from "./theme-toggle";
+import { StyleDrawer } from "./style-drawer";
 import { useStore } from "@/lib/store";
+import { STYLES, PREFIX } from "@/lib/libraries";
+import { cn } from "@/lib/utils";
 import { useEffect } from "react";
 
-export function SiteHeader({ total }: { total: number }) {
-  const { filter, setFilter, setCommandOpen } = useStore();
+interface Props {
+  total: number;
+}
+
+const SAMPLE_ICON = "home-2";
+
+export function SiteHeader({ total }: Props) {
+  const { setCommandOpen, viewStyle, setViewStyle } = useStore();
 
   useEffect(() => {
     const handler = (e: KeyboardEvent) => {
@@ -23,40 +31,92 @@ export function SiteHeader({ total }: { total: number }) {
 
   return (
     <header className="shrink-0 border-b border-border/60 bg-background/70 backdrop-blur-xl z-30">
-      <div className="mx-auto flex max-w-[1600px] items-center gap-4 px-6 py-3.5">
-        <div className="hidden md:block leading-tight shrink-0">
+      <div className="mx-auto flex max-w-[1600px] items-center gap-2 sm:gap-3 px-3 sm:px-6 py-3">
+        {/* Mobile: leading style drawer button --------------------------- */}
+        <StyleDrawer />
+
+        {/* Left spacer — pushes brand toward center on mobile ------------ */}
+        <div className="flex-1 md:hidden" />
+
+        {/* Brand ---------------------------------------------------------- */}
+        <div className="leading-tight shrink-0 text-center md:text-left">
           <div className="text-sm font-semibold">Solar Iconkit</div>
-          <div className="text-[11px] text-muted-foreground">
+          <div className="hidden sm:block text-[11px] text-muted-foreground">
             {total.toLocaleString()} icons · 6 styles
           </div>
         </div>
 
-        <div className="relative mx-auto w-full max-w-2xl">
-          <Icon
-            icon="solar:magnifer-linear"
-            className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground pointer-events-none"
-          />
-          <Input
-            value={filter}
-            onChange={(e) => setFilter(e.target.value)}
-            placeholder="Search icons..."
-            className="h-10 pl-10 pr-16 rounded-full bg-muted/40 border-border focus-visible:bg-background"
-          />
-          <kbd className="absolute right-3 top-1/2 -translate-y-1/2 hidden sm:inline-flex select-none items-center gap-1 rounded border border-border bg-background px-1.5 py-0.5 text-[10px] font-medium text-muted-foreground">
-            <span>⌘</span>K
-          </kbd>
+        {/* Style chips (center, icon + label) ---------------------------- */}
+        <div className="hidden md:flex flex-1 justify-center min-w-0">
+          <div
+            className="inline-flex items-center gap-0.5 rounded-full border border-border/60 bg-muted/40 p-1 shadow-inner overflow-x-auto max-w-full"
+            role="tablist"
+            aria-label="Icon style"
+          >
+            {STYLES.map((style) => {
+              const active = viewStyle === style.id;
+              return (
+                <button
+                  key={style.id}
+                  onClick={() => setViewStyle(style.id)}
+                  aria-pressed={active}
+                  className={cn(
+                    "inline-flex items-center justify-center gap-2 rounded-full px-3.5 py-1.5 text-[12.5px] font-medium",
+                    "transition-all duration-200 whitespace-nowrap min-h-[32px]",
+                    active
+                      ? "bg-background text-foreground shadow-[0_1px_2px_rgba(0,0,0,0.06),0_2px_8px_rgba(0,0,0,0.04)] ring-1 ring-border/80"
+                      : "text-muted-foreground hover:text-foreground hover:bg-background/60",
+                  )}
+                >
+                  <Icon
+                    icon={`${PREFIX}:${SAMPLE_ICON}${style.suffix}`}
+                    width={16}
+                    height={16}
+                    className={cn(
+                      "transition-all",
+                      active ? "opacity-100 scale-105" : "opacity-60",
+                    )}
+                    style={{ color: "currentColor" }}
+                  />
+                  <span>{style.label}</span>
+                </button>
+              );
+            })}
+          </div>
         </div>
 
-        <div className="flex items-center gap-1.5 shrink-0">
-          <Button
-            variant="outline"
-            size="icon"
-            className="h-9 w-9"
+        {/* Spacer for mobile so right buttons flush right ---------------- */}
+        <div className="flex-1 md:hidden" />
+
+        {/* Right action group: Search · Docs · Theme --------------------- */}
+        <div className="flex items-center gap-1 sm:gap-1.5 shrink-0">
+          <button
             onClick={() => setCommandOpen(true)}
-            aria-label="Command menu"
+            aria-label="Search icons (⌘K)"
+            title="Search (⌘K)"
+            className={cn(
+              "inline-flex h-9 w-9 items-center justify-center rounded-md",
+              "border border-border bg-background text-foreground",
+              "hover:bg-muted transition-colors",
+              "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1",
+            )}
           >
-            <Icon icon="solar:command-linear" className="h-4 w-4" />
-          </Button>
+            <Icon icon="solar:magnifer-bold-duotone" className="h-4 w-4" />
+          </button>
+
+          <Link
+            href="/docs"
+            aria-label="Docs"
+            title="Docs"
+            className={cn(
+              "inline-flex h-9 w-9 items-center justify-center rounded-md",
+              "border border-border bg-background text-foreground",
+              "hover:bg-muted transition-colors",
+            )}
+          >
+            <Icon icon="solar:document-text-bold-duotone" className="h-4 w-4" />
+          </Link>
+
           <ThemeToggle />
         </div>
       </div>

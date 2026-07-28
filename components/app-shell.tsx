@@ -3,9 +3,9 @@
 import { useEffect, useState } from "react";
 import { fetchCollection, type CollectionData } from "@/lib/iconify";
 import { SiteHeader } from "@/components/site-header";
-import { StyleBar } from "@/components/style-bar";
 import { Sidebar } from "@/components/sidebar";
 import { IconGrid } from "@/components/icon-grid";
+import { IconDialog } from "@/components/icon-dialog";
 import { CommandMenu } from "@/components/command-menu";
 import { SkeletonGrid, SidebarSkeleton } from "@/components/skeleton-grid";
 import { Icon } from "@iconify/react";
@@ -33,7 +33,6 @@ export function AppShell() {
   return (
     <div className="flex h-screen flex-col overflow-hidden">
       <SiteHeader total={total} />
-      <StyleBar />
       <div className="flex flex-1 min-h-0 overflow-hidden">
         {error ? (
           <div className="flex-1 grid place-items-center py-24">
@@ -58,7 +57,10 @@ export function AppShell() {
           </>
         )}
       </div>
-      {collection && <CommandMenu categories={collection.categories} order={collection.order} />}
+      {collection && (
+        <CommandMenu categories={collection.categories} order={collection.order} />
+      )}
+      <IconDialog />
     </div>
   );
 }

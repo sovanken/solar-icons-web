@@ -4,6 +4,11 @@ import { createContext, useCallback, useContext, useEffect, useMemo, useState } 
 import { SIZE_PRESETS, type SizePreset } from "./styles";
 import { BASE_STYLE_ID, STYLE_MAP } from "./libraries";
 
+export interface SelectedIcon {
+  base: string;
+  category: string;
+}
+
 interface Store {
   viewStyle: string;
   setViewStyle: (id: string) => void;
@@ -15,6 +20,8 @@ interface Store {
   setSize: (s: SizePreset) => void;
   commandOpen: boolean;
   setCommandOpen: (o: boolean) => void;
+  selected: SelectedIcon | null;
+  setSelected: (v: SelectedIcon | null) => void;
 }
 
 const StoreContext = createContext<Store | null>(null);
@@ -25,6 +32,7 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
   const [filter, setFilter] = useState<string>("");
   const [size, setSizeInner] = useState<SizePreset>(48);
   const [commandOpen, setCommandOpen] = useState(false);
+  const [selected, setSelected] = useState<SelectedIcon | null>(null);
 
   useEffect(() => {
     const s = localStorage.getItem("solar-size");
@@ -58,8 +66,19 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
       setSize,
       commandOpen,
       setCommandOpen,
+      selected,
+      setSelected,
     }),
-    [viewStyle, setViewStyle, activeCategory, filter, size, setSize, commandOpen],
+    [
+      viewStyle,
+      setViewStyle,
+      activeCategory,
+      filter,
+      size,
+      setSize,
+      commandOpen,
+      selected,
+    ],
   );
 
   return <StoreContext.Provider value={value}>{children}</StoreContext.Provider>;
