@@ -1,8 +1,8 @@
-# Solar Icons — Web Preview
+# Solar Iconkit — Web
 
-An interactive browser for the [Solar icon set](https://iconify.design/collections/solar). Filter 1,231 icons across 6 native styles, preview at any size, and copy or download them in the format you need — SVG, PNG, JPG, WebP, ZIP, React JSX, Vue SFC, Flutter widget code, base64 data URI, CSS background, HTML, and more.
+An interactive browser for the [Solar icon set](https://iconify.design/collections/solar). Filter 1,231 icons across 6 native styles, preview at any size, and copy or download them in the format you need — SVG, PNG, JPG, WebP, ZIP, React JSX, Vue SFC, Flutter widget code, CSS background, HTML, and more.
 
-Companion to the [`solar_iconkit`](https://pub.dev/packages/solar_iconkit) Flutter package.
+Companion to the [`solar_iconkit`](https://pub.dev/packages/solar_iconkit) Flutter package on pub.dev.
 
 - **Flutter package**: <https://pub.dev/packages/solar_iconkit>
 - **Icon set on Iconify**: <https://iconify.design/collections/solar>

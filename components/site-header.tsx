@@ -25,7 +25,7 @@ export function SiteHeader({ total }: { total: number }) {
     <header className="shrink-0 border-b border-border/60 bg-background/70 backdrop-blur-xl z-30">
       <div className="mx-auto flex max-w-[1600px] items-center gap-4 px-6 py-3.5">
         <div className="hidden md:block leading-tight shrink-0">
-          <div className="text-sm font-semibold">Solar Icons</div>
+          <div className="text-sm font-semibold">Solar Iconkit</div>
           <div className="text-[11px] text-muted-foreground">
             {total.toLocaleString()} icons · 6 styles
           </div>
