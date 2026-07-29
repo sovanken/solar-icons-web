@@ -133,7 +133,7 @@ export default function DocsPage() {
                 filename="pubspec.yaml"
                 lang="yaml"
                 code={`dependencies:
-  solar_iconkit: ^0.2.0`}
+  solar_iconkit: ^0.3.0`}
               />
               <p>Then fetch:</p>
               <CodeBlock
