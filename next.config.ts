@@ -72,6 +72,10 @@ const nextConfig: NextConfig = {
   // Skip Next's "Powered by Next.js" header — small opsec win.
   poweredByHeader: false,
 
+  // Don't ship browser source maps in production — the deployed site is public,
+  // so this keeps compiled source unmapped for casual inspection.
+  productionBrowserSourceMaps: false,
+
   // Compression — Vercel and most hosts already gzip/brotli, but leaving on
   // helps self-hosted deployments.
   compress: true,

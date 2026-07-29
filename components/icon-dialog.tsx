@@ -22,18 +22,11 @@ import {
   svgToWebpBlob,
 } from "@/lib/converters";
 
-type CopyKind =
-  | "svg"
-  | "flutter"
-  | "flutter-full"
-  | "iconify-tag"
-  | "name";
+type CopyKind = "flutter" | "flutter-full" | "name";
 
 const COPY_OPTIONS: { id: CopyKind; label: string; icon: string; desc: string }[] = [
   { id: "flutter", label: "Flutter", icon: "solar:programming-bold-duotone", desc: "SolarIcon widget (short)" },
   { id: "flutter-full", label: "Flutter (full)", icon: "solar:medal-star-bold-duotone", desc: "SolarIcon with size + color" },
-  { id: "svg", label: "SVG", icon: "solar:code-bold-duotone", desc: "Raw SVG markup" },
-  { id: "iconify-tag", label: "Iconify Tag", icon: "solar:widget-bold-duotone", desc: "<iconify-icon> element" },
   { id: "name", label: "Icon Name", icon: "solar:tag-bold-duotone", desc: "Iconify identifier" },
 ];
 
@@ -79,8 +72,6 @@ export function IconDialog() {
     return {
       flutter: svgToFlutter(selected.base, variant),
       "flutter-full": svgToFlutterFull(selected.base, variant, size, "#6366F1"),
-      svg: svgSource,
-      "iconify-tag": `<iconify-icon icon="${iconName}"></iconify-icon>`,
       name: iconName,
     };
   }, [svgSource, selected, iconName, variant, size]);

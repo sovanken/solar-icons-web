@@ -2,6 +2,7 @@ import Link from "next/link";
 import { Icon } from "@iconify/react";
 import { CodeBlock } from "@/components/code-block";
 import { ThemeToggle } from "@/components/theme-toggle";
+import { DocsToc, type TocItem } from "@/components/docs-toc";
 
 export const metadata = {
   title: "Docs — Solar Iconkit for Flutter",
@@ -9,7 +10,9 @@ export const metadata = {
     "How to use Solar Iconkit in your Flutter project — install, widget API, style guide, icon naming.",
 };
 
-const TOC = [
+const DOCS_SCROLL_ID = "docs-main";
+
+const TOC: TocItem[] = [
   { id: "introduction", label: "Introduction" },
   { id: "installation", label: "Installation" },
   { id: "usage", label: "Usage" },
@@ -69,45 +72,31 @@ export default function DocsPage() {
       <div className="flex flex-1 min-h-0 overflow-hidden">
         {/* TOC */}
         <aside className="hidden lg:flex w-64 shrink-0 flex-col border-r border-border/60 bg-muted/20 overflow-y-auto">
-          <nav className="p-4 space-y-0.5 sticky top-0">
-            <div className="mb-2 px-2 text-[10px] font-bold uppercase tracking-wider text-muted-foreground">
-              Contents
-            </div>
-            {TOC.map((item) => (
-              <a
-                key={item.id}
-                href={`#${item.id}`}
-                className={cn(
-                  "block rounded-md px-2 py-1.5 text-[13px] text-muted-foreground hover:text-foreground hover:bg-muted transition-colors whitespace-pre",
-                  item.parent && "pl-6 text-[12px]",
-                )}
-              >
-                {item.label}
-              </a>
-            ))}
-          </nav>
+          <DocsToc items={TOC} scrollRootId={DOCS_SCROLL_ID} />
         </aside>
 
-        <main className="flex-1 overflow-y-auto">
+        <main
+          id={DOCS_SCROLL_ID}
+          className="flex-1 overflow-y-auto scroll-smooth"
+        >
           <div className="mx-auto max-w-3xl px-4 sm:px-8 py-8 sm:py-12 space-y-16">
             {/* Introduction ------------------------------------------- */}
             <Section id="introduction" title="Introduction">
               <Hero />
               <p>
                 <strong>Solar Iconkit</strong> is a Flutter package that bundles
-                the entire{" "}
-                <a
-                  href="https://iconify.design/collections/solar"
-                  target="_blank"
-                  rel="noopener noreferrer"
+                the entire Solar icon set by 480 Design —{" "}
+                <strong>1,231 icons across 6 native styles</strong> (7,386 SVG
+                variants total) — behind a single, type-safe{" "}
+                <code>SolarIcon</code> widget. MIT-licensed, works offline, no
+                setup beyond adding the dependency. Preview every icon on the{" "}
+                <Link
+                  href="/"
                   className="text-primary underline underline-offset-2"
                 >
-                  Solar icon set
-                </a>{" "}
-                by 480 Design — <strong>1,231 icons across 6 native styles</strong>{" "}
-                (7,386 SVG variants total) — behind a single, type-safe{" "}
-                <code>SolarIcon</code> widget. MIT-licensed, works offline, no
-                setup beyond adding the dependency.
+                  browser
+                </Link>
+                .
               </p>
               <FeatureGrid />
               <p className="text-sm text-muted-foreground">
@@ -381,10 +370,6 @@ solar:home-2-bold-duotone   → Bold Duotone`}
                     pub.dev
                   </a>
                   .
-                </li>
-                <li>
-                  <strong>This browser</strong> — Built with Next.js, Tailwind
-                  CSS, and shadcn/ui.
                 </li>
               </ul>
             </Section>

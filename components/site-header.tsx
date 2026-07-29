@@ -88,8 +88,21 @@ export function SiteHeader({ total }: Props) {
         {/* Spacer for mobile so right buttons flush right ---------------- */}
         <div className="flex-1 md:hidden" />
 
-        {/* Right action group: Search · Docs · Theme --------------------- */}
+        {/* Right action group: Docs · Search · Theme --------------------- */}
         <div className="flex items-center gap-1 sm:gap-1.5 shrink-0">
+          <Link
+            href="/docs"
+            className={cn(
+              "inline-flex h-9 items-center justify-center rounded-md px-3",
+              "text-[13px] font-medium tracking-wide uppercase",
+              "text-muted-foreground hover:text-foreground hover:bg-muted",
+              "transition-colors",
+              "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1",
+            )}
+          >
+            Docs
+          </Link>
+
           <button
             onClick={() => setCommandOpen(true)}
             aria-label="Search icons (⌘K)"
@@ -103,19 +116,6 @@ export function SiteHeader({ total }: Props) {
           >
             <Icon icon="solar:magnifer-bold-duotone" className="h-4 w-4" />
           </button>
-
-          <Link
-            href="/docs"
-            aria-label="Docs"
-            title="Docs"
-            className={cn(
-              "inline-flex h-9 w-9 items-center justify-center rounded-md",
-              "border border-border bg-background text-foreground",
-              "hover:bg-muted transition-colors",
-            )}
-          >
-            <Icon icon="solar:document-text-bold-duotone" className="h-4 w-4" />
-          </Link>
 
           <ThemeToggle />
         </div>
