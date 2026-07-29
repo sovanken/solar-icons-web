@@ -2,17 +2,19 @@ import type { NextConfig } from "next";
 
 const isProd = process.env.NODE_ENV === "production";
 
-// Content Security Policy — locked down to same-origin + Iconify's API.
+// Content Security Policy — locked down to same-origin + Iconify's API +
+// Vercel's Analytics / Speed Insights endpoints.
 const csp = [
   "default-src 'self'",
-  // Next.js runtime needs inline + eval; Vercel scripts are same-origin.
-  "script-src 'self' 'unsafe-inline' 'unsafe-eval'",
+  // Next.js runtime needs inline + eval. Vercel Analytics + Speed Insights
+  // load their tracking scripts from va.vercel-scripts.com.
+  "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://va.vercel-scripts.com",
   // Tailwind emits inline styles via CSS vars.
   "style-src 'self' 'unsafe-inline'",
   // SVGs and PNGs may come inline as data URIs, or from Iconify.
   "img-src 'self' data: blob: https://api.iconify.design",
-  // Icon data + web components fetched from Iconify.
-  "connect-src 'self' https://api.iconify.design",
+  // Icon data from Iconify + Vercel Analytics + Speed Insights beacons.
+  "connect-src 'self' https://api.iconify.design https://va.vercel-scripts.com https://vitals.vercel-insights.com",
   // No <object>/<embed>.
   "object-src 'none'",
   // Fonts from self + inline (data URI).
