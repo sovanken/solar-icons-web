@@ -91,7 +91,7 @@ export default async function OpenGraphImage() {
               Solar Iconkit
             </div>
             <div style={{ fontSize: 20, color: "#a3a3a3", marginTop: 4 }}>
-              v1.0.0 · MIT · Flutter ≥ 3.27
+              MIT licensed · Flutter ≥ 3.27
             </div>
           </div>
         </div>
