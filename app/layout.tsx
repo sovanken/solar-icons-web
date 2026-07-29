@@ -46,7 +46,7 @@ export const metadata: Metadata = {
     "iconify",
     "duotone icons",
   ],
-  authors: [{ name: "sovankentech", url: "https://github.com/sovankentech" }],
+  authors: [{ name: "sovankentech", url: "https://pub.dev/publishers" }],
   creator: "sovankentech",
   publisher: "sovankentech",
   applicationName: "Solar Iconkit",

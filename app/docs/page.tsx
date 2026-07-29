@@ -61,15 +61,6 @@ export default function DocsPage() {
               pub.dev
               <Icon icon="solar:arrow-right-up-linear" width={12} height={12} />
             </a>
-            <a
-              href="https://github.com/sovankentech/solar_iconkit"
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label="GitHub"
-              className="ml-1 grid h-9 w-9 place-items-center rounded-md text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
-            >
-              <Icon icon="mdi:github" width={18} height={18} />
-            </a>
             <ThemeToggle />
           </nav>
         </div>
@@ -380,16 +371,7 @@ solar:home-2-bold-duotone   → Bold Duotone`}
                   (MIT).
                 </li>
                 <li>
-                  <strong>Flutter package</strong> — Source on{" "}
-                  <a
-                    href="https://github.com/sovankentech/solar_iconkit"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-primary underline underline-offset-2"
-                  >
-                    GitHub
-                  </a>{" "}
-                  · published on{" "}
+                  <strong>Flutter package</strong> — Published on{" "}
                   <a
                     href="https://pub.dev/packages/solar_iconkit"
                     target="_blank"
@@ -401,17 +383,8 @@ solar:home-2-bold-duotone   → Bold Duotone`}
                   .
                 </li>
                 <li>
-                  <strong>This browser</strong> — Next.js + Tailwind CSS +
-                  shadcn/ui. Source on{" "}
-                  <a
-                    href="https://github.com/sovankentech/solar-icons-web"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-primary underline underline-offset-2"
-                  >
-                    GitHub
-                  </a>
-                  .
+                  <strong>This browser</strong> — Built with Next.js, Tailwind
+                  CSS, and shadcn/ui.
                 </li>
               </ul>
             </Section>
@@ -426,16 +399,8 @@ solar:home-2-bold-duotone   → Bold Duotone`}
                     height={12}
                     className="inline text-red-500 -mt-0.5"
                   />{" "}
-                  by{" "}
-                  <a
-                    href="https://github.com/sovankentech"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-foreground hover:underline"
-                  >
-                    sovankentech
-                  </a>{" "}
-                  · for the Flutter community
+                  by <span className="text-foreground">sovankentech</span> ·
+                  for the Flutter community
                 </div>
                 <div>
                   <Link href="/" className="hover:text-foreground">
@@ -539,15 +504,13 @@ function Hero() {
           <Icon icon="simple-icons:dart" width={14} height={14} />
           Install from pub.dev
         </a>
-        <a
-          href="https://github.com/sovankentech/solar_iconkit"
-          target="_blank"
-          rel="noopener noreferrer"
+        <Link
+          href="/"
           className="inline-flex items-center gap-1.5 rounded-full border border-border bg-background px-3 py-1.5 text-[12px] font-semibold hover:bg-muted transition-colors"
         >
-          <Icon icon="mdi:github" width={14} height={14} />
-          View source
-        </a>
+          <Icon icon="solar:widget-5-bold-duotone" width={14} height={14} />
+          Browse icons
+        </Link>
       </div>
     </div>
   );
