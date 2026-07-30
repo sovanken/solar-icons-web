@@ -1,19 +1,31 @@
 "use client";
 
-/// Persistent set of favorited (starred) icon base names. Stored in
-/// localStorage under a single JSON string so we can round-trip without
-/// per-key noise, and versioned so schema changes can migrate safely.
+/// Persistent set of favorited (starred) icon base names.
+///
+/// The store lives at the module level so every consumer of [useFavorites]
+/// shares the same instance. Toggling from any component (icon dialog,
+/// sidebar, etc.) instantly updates every other component. Without this,
+/// each component held its own copy of the Set and only re-read on refresh.
+///
+/// Persistence: JSON-serialised array under a single localStorage key,
+/// versioned so schema changes can migrate safely. Cross-tab sync via the
+/// window `storage` event — starring in another tab updates every open tab.
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useSyncExternalStore } from "react";
 
 const STORAGE_KEY = "solar-favorites-v1";
 
-function readFavorites(): Set<string> {
+// ------- Module-level store --------------------------------------------------
+
+let state: Set<string> = new Set();
+const listeners = new Set<() => void>();
+
+function loadFromStorage(): Set<string> {
   if (typeof window === "undefined") return new Set();
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
     if (!raw) return new Set();
-    const parsed = JSON.parse(raw);
+    const parsed: unknown = JSON.parse(raw);
     if (!Array.isArray(parsed)) return new Set();
     return new Set(parsed.filter((v): v is string => typeof v === "string"));
   } catch {
@@ -21,43 +33,75 @@ function readFavorites(): Set<string> {
   }
 }
 
-function writeFavorites(set: Set<string>): void {
+function writeToStorage(next: Set<string>): void {
   try {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify([...set]));
+    localStorage.setItem(STORAGE_KEY, JSON.stringify([...next]));
   } catch {
-    // Storage quota or private-browsing mode — silently skip.
+    // Storage quota / private-browsing / SSR — silently skip.
   }
 }
 
-/// React hook exposing the favorites set + mutators.
-///
-/// Multi-tab safe via the `storage` event: if the user stars an icon in
-/// another tab, every other open tab reflects the change.
-export function useFavorites() {
-  // Start empty on server; hydrate from localStorage on client to avoid an
-  // SSR/CSR mismatch that would trigger a hydration warning.
-  const [favorites, setFavorites] = useState<Set<string>>(() => new Set());
+function setState(next: Set<string>, persist = true): void {
+  state = next;
+  if (persist) writeToStorage(next);
+  for (const listener of listeners) listener();
+}
 
-  useEffect(() => {
-    setFavorites(readFavorites());
-    const onStorage = (e: StorageEvent) => {
-      if (e.key === STORAGE_KEY) setFavorites(readFavorites());
-    };
-    window.addEventListener("storage", onStorage);
-    return () => window.removeEventListener("storage", onStorage);
-  }, []);
+function subscribe(listener: () => void): () => void {
+  listeners.add(listener);
+  return () => {
+    listeners.delete(listener);
+  };
+}
+
+function getSnapshot(): Set<string> {
+  return state;
+}
+
+function getServerSnapshot(): Set<string> {
+  // SSR — pretend nothing is starred until the client hydrates.
+  return EMPTY_SET;
+}
+
+const EMPTY_SET: Set<string> = new Set();
+
+// ------- Lifecycle: init from localStorage + cross-tab listener --------------
+
+// Fire once per browser session on the module's first client-side import.
+let initialized = false;
+function initClientOnce() {
+  if (initialized || typeof window === "undefined") return;
+  initialized = true;
+
+  state = loadFromStorage();
+
+  window.addEventListener("storage", (e) => {
+    if (e.key !== STORAGE_KEY) return;
+    // Another tab wrote to storage — refresh our snapshot without echoing
+    // the write back to localStorage.
+    setState(loadFromStorage(), false);
+  });
+}
+
+// ------- Public hook + mutators ---------------------------------------------
+
+export function useFavorites() {
+  useEffect(initClientOnce, []);
+
+  const favorites = useSyncExternalStore(
+    subscribe,
+    getSnapshot,
+    getServerSnapshot,
+  );
 
   const toggle = useCallback((base: string) => {
-    setFavorites((prev) => {
-      const next = new Set(prev);
-      if (next.has(base)) {
-        next.delete(base);
-      } else {
-        next.add(base);
-      }
-      writeFavorites(next);
-      return next;
-    });
+    const next = new Set(state);
+    if (next.has(base)) {
+      next.delete(base);
+    } else {
+      next.add(base);
+    }
+    setState(next);
   }, []);
 
   const isFavorite = useCallback(
@@ -65,10 +109,7 @@ export function useFavorites() {
     [favorites],
   );
 
-  const clear = useCallback(() => {
-    setFavorites(new Set());
-    writeFavorites(new Set());
-  }, []);
+  const clear = useCallback(() => setState(new Set()), []);
 
   return { favorites, toggle, isFavorite, clear };
 }
