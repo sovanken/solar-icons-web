@@ -9,18 +9,25 @@ interface Props {
   category: string;
   suffix: string;
   onClick: (base: string, category: string) => void;
+  focused?: boolean;
 }
 
-export function IconCard({ base, category, suffix, onClick }: Props) {
+export function IconCard({ base, category, suffix, onClick, focused }: Props) {
   const iconName = `${PREFIX}:${base}${suffix}`;
 
   return (
     <button
       onClick={() => onClick(base, category)}
+      data-icon-card="1"
+      tabIndex={focused ? 0 : -1}
       className={cn(
-        "icon-card-anim group relative flex flex-col items-center justify-center gap-3 rounded-xl border border-border/60 bg-card p-3.5",
+        "icon-card-anim group relative flex flex-col items-center justify-center gap-3 rounded-xl border bg-card p-3.5",
         "transition-all duration-150 hover:-translate-y-0.5 hover:border-foreground/30 hover:shadow-md",
         "cursor-pointer overflow-hidden",
+        "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
+        focused
+          ? "border-foreground/60 ring-2 ring-foreground/30 shadow-md"
+          : "border-border/60",
       )}
       style={{
         minHeight: "calc(var(--icon-size, 48px) + 60px)",

@@ -2,12 +2,13 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { Icon } from "@iconify/react";
-import { Dialog, DialogContent, DialogTitle, DialogDescription } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogClose, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { STYLES, STYLE_MAP, PREFIX } from "@/lib/libraries";
 import { fetchIconSvg } from "@/lib/iconify";
 import { useStore } from "@/lib/store";
+import { useFavorites } from "@/lib/favorites";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
 import {
@@ -32,11 +33,15 @@ const COPY_OPTIONS: { id: CopyKind; label: string; icon: string; desc: string }[
 
 export function IconDialog() {
   const { viewStyle, size, selected, setSelected } = useStore();
+  const { toggle: toggleFavorite, isFavorite } = useFavorites();
   const onClose = () => setSelected(null);
   const [variant, setVariant] = useState<string>(viewStyle);
   const [svgSource, setSvgSource] = useState<string>("");
   const [loading, setLoading] = useState(false);
   const [downloading, setDownloading] = useState<string | null>(null);
+  // Which copy button just fired — used for the green-flash micro-interaction.
+  // Cleared after 1.4s so the checkmark returns to the normal icon.
+  const [justCopied, setJustCopied] = useState<CopyKind | null>(null);
 
   useEffect(() => {
     if (!selected) return;
@@ -87,7 +92,10 @@ export function IconDialog() {
     try {
       await navigator.clipboard.writeText(text);
       toast.success(`Copied ${COPY_OPTIONS.find((o) => o.id === kind)?.label}`);
-    } catch (err) {
+      // Trigger the green-flash micro-interaction on the button.
+      setJustCopied(kind);
+      setTimeout(() => setJustCopied((current) => (current === kind ? null : current)), 1400);
+    } catch {
       toast.error("Clipboard write failed");
     }
   };
@@ -141,23 +149,60 @@ export function IconDialog() {
 
   return (
     <Dialog open={!!selected} onOpenChange={(o) => !o && onClose()}>
-      <DialogContent className="sm:max-w-3xl w-[95vw] p-0 gap-0 overflow-hidden max-h-[92vh] flex flex-col">
-        <div className="border-b border-border p-4 sm:p-6 pb-3 sm:pb-4 shrink-0">
-          <DialogTitle className="font-mono text-xs sm:text-sm truncate pr-8">
-            {iconName}
-          </DialogTitle>
-          <DialogDescription className="mt-1 flex flex-wrap items-center gap-1.5">
-            <Badge variant="secondary" className="rounded-full text-[10px]">
-              Solar
-            </Badge>
-            <Badge variant="secondary" className="rounded-full text-[10px]">
-              {selected.category}
-            </Badge>
-            <Badge variant="outline" className="rounded-full text-[10px]">
-              {activeStyle.label}
-            </Badge>
-          </DialogDescription>
-
+      <DialogContent
+        showCloseButton={false}
+        // Transparent outer shell — the visible dialog lives in the inner
+        // wrapper below. This lets the floating close button extend past
+        // the dialog's visible edge without being clipped by overflow-hidden.
+        className="sm:max-w-3xl w-[95vw] max-h-[92vh] p-0 gap-0 bg-transparent border-0 shadow-none ring-0 rounded-none flex flex-col"
+      >
+        {/* Actual visible dialog surface — carries all the styling that
+            used to be on DialogContent. overflow-hidden clips the inner
+            scroll region without affecting the floating close button. */}
+        <div className="relative flex flex-col overflow-hidden rounded-2xl bg-popover text-popover-foreground shadow-2xl ring-1 ring-foreground/10 min-h-0 flex-1">
+          <div className="border-b border-border p-4 sm:p-6 pb-3 sm:pb-4 shrink-0">
+          <div className="flex items-start justify-between gap-3">
+            <div className="min-w-0 flex-1">
+              <DialogTitle className="font-mono text-xs sm:text-sm truncate pr-2">
+                {iconName}
+              </DialogTitle>
+              <DialogDescription className="mt-1 flex flex-wrap items-center gap-1.5">
+                <Badge variant="secondary" className="rounded-full text-[10px]">
+                  Solar
+                </Badge>
+                <Badge variant="secondary" className="rounded-full text-[10px]">
+                  {selected.category}
+                </Badge>
+                <Badge variant="outline" className="rounded-full text-[10px]">
+                  {activeStyle.label}
+                </Badge>
+              </DialogDescription>
+            </div>
+            <button
+              type="button"
+              onClick={() => toggleFavorite(selected.base)}
+              aria-label={
+                isFavorite(selected.base)
+                  ? "Remove from starred"
+                  : "Add to starred"
+              }
+              className={cn(
+                "shrink-0 grid h-9 w-9 place-items-center rounded-lg border transition-all",
+                isFavorite(selected.base)
+                  ? "border-amber-500/40 bg-amber-500/10 text-amber-500 hover:bg-amber-500/20"
+                  : "border-border text-muted-foreground hover:text-amber-500 hover:border-amber-500/40 hover:bg-amber-500/5",
+              )}
+            >
+              <Icon
+                icon={
+                  isFavorite(selected.base)
+                    ? "solar:star-bold"
+                    : "solar:star-linear"
+                }
+                className="h-4 w-4"
+              />
+            </button>
+          </div>
         </div>
 
         <div className="p-4 sm:p-6 overflow-y-auto flex-1 min-h-0">
@@ -188,14 +233,30 @@ export function IconDialog() {
               })}
             </div>
             <div
-              className="flex-1 grid place-items-center rounded-xl border border-border bg-muted/40 min-h-[200px] sm:min-h-[280px] relative overflow-hidden"
+              className="flex-1 grid place-items-center rounded-2xl border border-border bg-muted/30 min-h-[220px] sm:min-h-[300px] relative overflow-hidden"
               style={{
                 backgroundImage:
                   "linear-gradient(to right, color-mix(in oklab, currentColor 4%, transparent) 1px, transparent 1px), linear-gradient(to bottom, color-mix(in oklab, currentColor 4%, transparent) 1px, transparent 1px)",
                 backgroundSize: "24px 24px",
               }}
             >
-              <Icon icon={iconName} className="h-28 w-28 sm:h-40 sm:w-40" />
+              {/* Subtle orange glow behind the icon — matches the Solar brand. */}
+              <div
+                aria-hidden="true"
+                className="absolute inset-0 grid place-items-center pointer-events-none"
+              >
+                <div
+                  className="h-40 w-40 sm:h-56 sm:w-56 rounded-full opacity-40"
+                  style={{
+                    background:
+                      "radial-gradient(circle, rgba(249,115,22,0.25) 0%, rgba(249,115,22,0) 70%)",
+                  }}
+                />
+              </div>
+              <Icon
+                icon={iconName}
+                className="relative h-32 w-32 sm:h-44 sm:w-44 drop-shadow-lg"
+              />
             </div>
           </div>
 
@@ -210,23 +271,50 @@ export function IconDialog() {
 
             <TabsContent value="copy" className="mt-4">
               <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
-                {COPY_OPTIONS.map((opt) => (
-                  <button
-                    key={opt.id}
-                    onClick={() => doCopy(opt.id)}
-                    disabled={!ready}
-                    className={cn(
-                      "flex flex-col items-start gap-1 rounded-xl border border-border bg-muted/30 p-3 text-left transition-all",
-                      "hover:border-foreground/40 hover:bg-muted disabled:opacity-50 disabled:cursor-not-allowed",
-                    )}
-                  >
-                    <div className="flex items-center gap-2">
-                      <Icon icon={opt.icon} className="h-5 w-5 text-foreground/80" />
-                      <span className="text-sm font-medium">{opt.label}</span>
-                    </div>
-                    <span className="text-[10px] text-muted-foreground">{opt.desc}</span>
-                  </button>
-                ))}
+                {COPY_OPTIONS.map((opt) => {
+                  const flashing = justCopied === opt.id;
+                  return (
+                    <button
+                      key={opt.id}
+                      onClick={() => doCopy(opt.id)}
+                      disabled={!ready}
+                      className={cn(
+                        "flex flex-col items-start gap-1 rounded-xl border p-3 text-left transition-all duration-200",
+                        "disabled:opacity-50 disabled:cursor-not-allowed",
+                        flashing
+                          ? "border-green-500/70 bg-green-500/10 ring-1 ring-green-500/30"
+                          : "border-border bg-muted/30 hover:border-foreground/40 hover:bg-muted",
+                      )}
+                    >
+                      <div className="flex items-center gap-2">
+                        <Icon
+                          icon={
+                            flashing
+                              ? "solar:check-circle-bold-duotone"
+                              : opt.icon
+                          }
+                          className={cn(
+                            "h-5 w-5 transition-colors",
+                            flashing
+                              ? "text-green-500"
+                              : "text-foreground/80",
+                          )}
+                        />
+                        <span
+                          className={cn(
+                            "text-sm font-medium transition-colors",
+                            flashing && "text-green-600 dark:text-green-400",
+                          )}
+                        >
+                          {flashing ? "Copied!" : opt.label}
+                        </span>
+                      </div>
+                      <span className="text-[10px] text-muted-foreground">
+                        {opt.desc}
+                      </span>
+                    </button>
+                  );
+                })}
               </div>
             </TabsContent>
 
@@ -300,6 +388,27 @@ export function IconDialog() {
             </TabsContent>
           </Tabs>
         </div>
+        </div>
+
+        {/* Floating close button — positioned to straddle the dialog's
+            top-right corner (50% inside, 50% outside). Achievable because
+            the outer DialogContent has no overflow-hidden. */}
+        <DialogClose
+          render={
+            <button
+              aria-label="Close"
+              className={cn(
+                "absolute -top-5 -right-5 z-30 grid h-10 w-10 place-items-center rounded-full",
+                "border border-border bg-background/95 text-muted-foreground backdrop-blur shadow-md",
+                "hover:text-foreground hover:border-foreground/50 hover:bg-muted",
+                "active:scale-95 transition-all duration-150",
+                "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
+              )}
+            >
+              <Icon icon="lucide:x" className="h-4 w-4" />
+            </button>
+          }
+        />
       </DialogContent>
     </Dialog>
   );
@@ -406,9 +515,13 @@ function Chip({
       onClick={onClick}
       disabled={disabled || busy}
       className={cn(
-        "inline-flex items-center gap-1.5 rounded-full border px-4 py-2 text-[12.5px] font-medium transition-all whitespace-nowrap min-h-[34px]",
+        "relative inline-flex items-center gap-1.5 rounded-full border px-4 py-2 text-[12.5px] font-medium transition-all whitespace-nowrap min-h-[34px] overflow-hidden",
         primary
-          ? "bg-foreground text-background border-foreground hover:opacity-90 shadow-sm"
+          ? // Rainbow-gradient CTA — the pill lights up on hover and lifts
+            // slightly. Matches the reference's colorful primary download button.
+            "border-transparent text-white shadow-lg shadow-orange-500/25 hover:shadow-orange-500/40 hover:-translate-y-px active:translate-y-0 " +
+            "bg-[linear-gradient(120deg,#F97316_0%,#EC4899_40%,#8B5CF6_75%,#22D3EE_100%)] bg-[length:200%_200%] " +
+            "[transition:background-position_600ms_ease,transform_150ms_ease] hover:bg-[position:100%_100%]"
           : "border-border text-muted-foreground hover:text-foreground hover:border-foreground/50 hover:bg-muted",
         (disabled || busy) && "opacity-50 cursor-not-allowed",
       )}

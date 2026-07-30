@@ -5,7 +5,7 @@ import { Icon } from "@iconify/react";
 
 // Bumped whenever the announcement copy changes so dismissed users see the
 // next milestone. Local storage stores the last-dismissed banner key.
-const BANNER_KEY = "solar-iconkit-banner-v1.0.0";
+const BANNER_KEY = "solar-iconkit-banner-v1";
 
 export function AnnouncementBanner() {
   const [dismissed, setDismissed] = useState<boolean | null>(null);
@@ -30,8 +30,8 @@ export function AnnouncementBanner() {
           className="h-4 w-4 shrink-0 sm:h-5 sm:w-5"
         />
         <div className="min-w-0 flex-1 text-[12px] leading-tight sm:text-[13px]">
-          <span className="font-semibold">solar_iconkit 1.0.0</span> is now on
-          pub.dev — first stable release with 1,231 icons and 6 native styles.{" "}
+          <span className="font-semibold">solar_iconkit is on pub.dev</span> —
+          1,231 Flutter icons across 6 native styles, one type-safe widget.{" "}
           <a
             href="https://pub.dev/packages/solar_iconkit"
             target="_blank"

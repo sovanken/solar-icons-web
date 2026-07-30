@@ -9,6 +9,7 @@ import { IconDialog } from "@/components/icon-dialog";
 import { CommandMenu } from "@/components/command-menu";
 import { SkeletonGrid, SidebarSkeleton } from "@/components/skeleton-grid";
 import { AnnouncementBanner } from "@/components/announcement-banner";
+import { UrlSync } from "@/components/url-sync";
 import { Icon } from "@iconify/react";
 
 export function AppShell() {
@@ -33,6 +34,7 @@ export function AppShell() {
 
   return (
     <div className="flex h-screen flex-col overflow-hidden">
+      <UrlSync />
       <AnnouncementBanner />
       <SiteHeader total={total} />
       <div className="flex flex-1 min-h-0 overflow-hidden">

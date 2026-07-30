@@ -1,6 +1,7 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
+import { Icon } from "@iconify/react";
 import { cn } from "@/lib/utils";
 
 export interface TocItem {
@@ -9,16 +10,21 @@ export interface TocItem {
   parent?: string;
 }
 
-// Highlight the section currently in view as the user scrolls the docs.
-//
-// Approach: on every scroll event, find the LAST section whose top has crossed
-// a fixed offset from the top of the scroll container. This is more robust than
-// IntersectionObserver for two reasons:
-//   1. Short sections at the bottom always get highlighted when scrolled to
-//      (they'd otherwise never enter an IO trigger band).
-//   2. Explicit anchor clicks always match — the scroll settles with the
-//      target section's top at the threshold line, and this is exactly what
-//      the algorithm picks.
+interface TocGroup {
+  parent: TocItem;
+  children: TocItem[];
+}
+
+/// Highlight the active section AND provide a collapsible tree.
+///
+/// Items with `parent` are grouped under their parent. Parents render with a
+/// chevron and expand/collapse on click. Children render indented with a
+/// vertical guide line on the left, similar to VSCode / Docusaurus sidebars.
+///
+/// Scroll-position detection is unchanged from the earlier version: find the
+/// last section whose top has crossed a 120 px offset from the top of the
+/// scroll container, with a bottom-of-scroll override for short trailing
+/// sections.
 export function DocsToc({
   items,
   scrollRootId,
@@ -27,6 +33,50 @@ export function DocsToc({
   scrollRootId: string;
 }) {
   const [activeId, setActiveId] = useState<string>(items[0]?.id ?? "");
+
+  // Build the parent → children groups. Flat items (no parent, no children)
+  // pass through as parents with an empty children array.
+  const groups = useMemo<TocGroup[]>(() => {
+    const result: TocGroup[] = [];
+    let current: TocGroup | null = null;
+    for (const item of items) {
+      if (item.parent) {
+        // Attach to the most recent group with matching parent id.
+        if (current && current.parent.id === item.parent) {
+          current.children.push({ ...item, label: item.label.trim() });
+        } else {
+          // Orphan child — no matching parent above it. Treat as top-level.
+          result.push({
+            parent: { ...item, label: item.label.trim() },
+            children: [],
+          });
+        }
+      } else {
+        current = { parent: item, children: [] };
+        result.push(current);
+      }
+    }
+    return result;
+  }, [items]);
+
+  // Expansion state per parent id. Default: everything expanded so nothing
+  // hides unless the user chooses to collapse.
+  const [expanded, setExpanded] = useState<Record<string, boolean>>(() => {
+    const initial: Record<string, boolean> = {};
+    for (const g of groups) {
+      if (g.children.length > 0) initial[g.parent.id] = true;
+    }
+    return initial;
+  });
+
+  // When the active section changes to a child, auto-expand its parent so
+  // the highlight is visible. Never auto-collapse — user might want it open.
+  useEffect(() => {
+    const parent = items.find((i) => i.id === activeId)?.parent;
+    if (parent) {
+      setExpanded((prev) => (prev[parent] ? prev : { ...prev, [parent]: true }));
+    }
+  }, [activeId, items]);
 
   useEffect(() => {
     const root = document.getElementById(scrollRootId);
@@ -40,34 +90,21 @@ export function DocsToc({
       .filter((t): t is { id: string; el: HTMLElement } => t !== null);
     if (targets.length === 0) return;
 
-    // Offset in px from the top of the scroll container. A section becomes
-    // active as soon as its top scrolls above this line.
     const OFFSET = 120;
-
     let rafId = 0;
 
     const update = () => {
       rafId = 0;
-
       const rootTop = root.getBoundingClientRect().top;
       let current = targets[0].id;
-
       for (const t of targets) {
         const relTop = t.el.getBoundingClientRect().top - rootTop;
-        if (relTop - OFFSET <= 0) {
-          current = t.id;
-        } else {
-          break;
-        }
+        if (relTop - OFFSET <= 0) current = t.id;
+        else break;
       }
-
-      // If we're at (or effectively at) the bottom of the scroll container,
-      // force the last item — otherwise short trailing sections like Credits
-      // never light up.
       const atBottom =
         root.scrollTop + root.clientHeight >= root.scrollHeight - 4;
       if (atBottom) current = targets[targets.length - 1].id;
-
       setActiveId(current);
     };
 
@@ -87,27 +124,81 @@ export function DocsToc({
     };
   }, [items, scrollRootId]);
 
+  const toggle = (id: string) =>
+    setExpanded((prev) => ({ ...prev, [id]: !prev[id] }));
+
   return (
     <nav className="p-4 space-y-0.5 sticky top-0">
       <div className="mb-2 px-2 text-[10px] font-bold uppercase tracking-wider text-muted-foreground">
         Contents
       </div>
-      {items.map((item) => {
-        const active = activeId === item.id;
+      {groups.map(({ parent, children }) => {
+        const hasChildren = children.length > 0;
+        const isOpen = expanded[parent.id] ?? true;
+        const parentActive = activeId === parent.id;
         return (
-          <a
-            key={item.id}
-            href={`#${item.id}`}
-            className={cn(
-              "block rounded-md px-2 py-1.5 text-[13px] transition-colors whitespace-pre",
-              item.parent && "pl-6 text-[12px]",
-              active
-                ? "bg-muted text-foreground font-medium"
-                : "text-muted-foreground hover:text-foreground hover:bg-muted",
+          <div key={parent.id}>
+            {/* Parent row */}
+            <div
+              className={cn(
+                "flex items-center rounded-md transition-colors",
+                parentActive
+                  ? "bg-muted text-foreground"
+                  : "text-muted-foreground hover:text-foreground hover:bg-muted",
+              )}
+            >
+              <a
+                href={`#${parent.id}`}
+                className={cn(
+                  "flex-1 min-w-0 px-2 py-1.5 text-[13px] truncate",
+                  parentActive && "font-medium",
+                )}
+              >
+                {parent.label}
+              </a>
+              {hasChildren && (
+                <button
+                  type="button"
+                  onClick={() => toggle(parent.id)}
+                  aria-expanded={isOpen}
+                  aria-label={
+                    isOpen ? `Collapse ${parent.label}` : `Expand ${parent.label}`
+                  }
+                  className="shrink-0 grid h-7 w-7 place-items-center rounded-md hover:bg-black/5 dark:hover:bg-white/5 transition-colors"
+                >
+                  <Icon
+                    icon="solar:alt-arrow-down-linear"
+                    className={cn(
+                      "h-3.5 w-3.5 transition-transform duration-150",
+                      !isOpen && "-rotate-90",
+                    )}
+                  />
+                </button>
+              )}
+            </div>
+            {/* Children — indented with a vertical guide line */}
+            {hasChildren && isOpen && (
+              <div className="ml-3 mt-0.5 border-l border-border/60 pl-2 space-y-0.5">
+                {children.map((child) => {
+                  const active = activeId === child.id;
+                  return (
+                    <a
+                      key={child.id}
+                      href={`#${child.id}`}
+                      className={cn(
+                        "block rounded-md px-2 py-1 text-[12.5px] transition-colors",
+                        active
+                          ? "bg-muted text-foreground font-medium"
+                          : "text-muted-foreground hover:text-foreground hover:bg-muted",
+                      )}
+                    >
+                      {child.label}
+                    </a>
+                  );
+                })}
+              </div>
             )}
-          >
-            {item.label}
-          </a>
+          </div>
         );
       })}
     </nav>

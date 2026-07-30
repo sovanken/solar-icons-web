@@ -7,7 +7,7 @@ import { DocsToc, type TocItem } from "@/components/docs-toc";
 export const metadata = {
   title: "Docs — Solar Iconkit for Flutter",
   description:
-    "How to use Solar Iconkit in your Flutter project — install, widget API, style guide, icon naming.",
+    "Complete documentation for solar_iconkit — installation, widget API reference, style guide, recipes, performance notes, accessibility, testing, and troubleshooting.",
 };
 
 const DOCS_SCROLL_ID = "docs-main";
@@ -15,12 +15,35 @@ const DOCS_SCROLL_ID = "docs-main";
 const TOC: TocItem[] = [
   { id: "introduction", label: "Introduction" },
   { id: "installation", label: "Installation" },
-  { id: "usage", label: "Usage" },
-  { id: "widget-api", label: "  Widget API", parent: "usage" },
-  { id: "with-icontheme", label: "  With IconTheme", parent: "usage" },
-  { id: "in-buttons", label: "  In buttons", parent: "usage" },
+  { id: "quickstart", label: "Quick start" },
+  { id: "widget-api", label: "Widget API" },
   { id: "styles", label: "Styles" },
+  { id: "recipes", label: "Recipes" },
+  { id: "in-buttons", label: "  Buttons", parent: "recipes" },
+  { id: "in-lists", label: "  Lists", parent: "recipes" },
+  { id: "in-appbar", label: "  App bars", parent: "recipes" },
+  { id: "in-forms", label: "  Text fields", parent: "recipes" },
+  { id: "in-navbars", label: "  Nav bars", parent: "recipes" },
+  { id: "coloring", label: "  Coloring", parent: "recipes" },
+  { id: "with-icontheme", label: "  IconTheme", parent: "recipes" },
+  { id: "shadows", label: "  Shadows", parent: "recipes" },
+  { id: "blend-modes", label: "  Blend modes", parent: "recipes" },
+  { id: "animation", label: "  Animation", parent: "recipes" },
+  { id: "custom-effects", label: "Custom effects" },
+  { id: "fx-gradient", label: "  Gradient sheen", parent: "custom-effects" },
+  { id: "fx-tile", label: "  App-icon tile", parent: "custom-effects" },
+  { id: "fx-glow", label: "  Colored glow", parent: "custom-effects" },
+  { id: "fx-neon", label: "  Neon", parent: "custom-effects" },
+  { id: "fx-glass", label: "  Frosted glass", parent: "custom-effects" },
+  { id: "fx-outline-glow", label: "  Outline glow", parent: "custom-effects" },
   { id: "naming", label: "Icon naming" },
+  { id: "accessibility", label: "Accessibility" },
+  { id: "rtl", label: "RTL and text direction" },
+  { id: "performance", label: "Performance" },
+  { id: "bundle-size", label: "Bundle size" },
+  { id: "testing", label: "Testing" },
+  { id: "troubleshooting", label: "Troubleshooting" },
+  { id: "versioning", label: "Versioning" },
   { id: "credits", label: "Credits" },
 ];
 
@@ -99,32 +122,20 @@ export default function DocsPage() {
                 .
               </p>
               <FeatureGrid />
-              <p className="text-sm text-muted-foreground">
-                This site is the icon browser: use it to preview icons, pick a
-                style, and copy either the Flutter widget code or the raw SVG.
-                The package itself is on{" "}
-                <a
-                  href="https://pub.dev/packages/solar_iconkit"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-primary underline underline-offset-2"
-                >
-                  pub.dev
-                </a>
-                .
-              </p>
             </Section>
 
             {/* Installation ------------------------------------------- */}
             <Section id="installation" title="Installation">
-              <p>Add to your Flutter project&apos;s <code>pubspec.yaml</code>:</p>
+              <p>
+                Add to <code>pubspec.yaml</code>:
+              </p>
               <CodeBlock
                 filename="pubspec.yaml"
                 lang="yaml"
                 code={`dependencies:
   solar_iconkit: ^1.0.0`}
               />
-              <p>Then fetch:</p>
+              <p>Or use the CLI:</p>
               <CodeBlock
                 filename="Terminal"
                 lang="bash"
@@ -132,207 +143,1134 @@ export default function DocsPage() {
 # or
 flutter pub get`}
               />
-              <p>Import wherever you need icons:</p>
+              <p>Import wherever icons are needed:</p>
               <CodeBlock
                 lang="dart"
                 code={`import 'package:solar_iconkit/solar_iconkit.dart';`}
               />
-              <div className="rounded-xl border border-border/60 bg-muted/40 p-4 text-sm">
-                <div className="flex items-start gap-2">
-                  <Icon
-                    icon="solar:info-circle-bold-duotone"
-                    width={18}
-                    height={18}
-                    className="text-primary shrink-0 mt-0.5"
-                  />
-                  <div>
-                    <strong>Requirements:</strong> Flutter ≥ 3.27, Dart ^3.6.
-                    Runs on Android, iOS, macOS, Windows, Linux, and Web.
-                  </div>
-                </div>
-              </div>
+              <Callout icon="solar:info-circle-bold-duotone" tone="info">
+                <strong>Requirements</strong> — Flutter ≥ 3.27, Dart ^3.6. Runs
+                on Android, iOS, macOS, Windows, Linux, and Web.
+              </Callout>
+              <p>
+                Consumers don&apos;t need to declare any assets in their own
+                pubspec — the package bundles the SVGs and Flutter resolves
+                them via the <code>packages/</code> scheme automatically. You
+                also don&apos;t need to add <code>flutter_svg</code> directly;
+                it&apos;s pulled in transitively.
+              </p>
             </Section>
 
-            {/* Usage -------------------------------------------------- */}
-            <Section id="usage" title="Usage">
-              <p>
-                Every icon is a <code>SolarIcon</code> widget. Reference icons
-                by their generated constant on <code>SolarIcons</code> and pick
-                a style from <code>SolarIconStyle</code>.
-              </p>
+            {/* Quick start ------------------------------------------- */}
+            <Section id="quickstart" title="Quick start">
+              <p>The three most common shapes:</p>
+              <CodeBlock
+                filename="main.dart"
+                lang="dart"
+                code={`import 'package:flutter/material.dart';
+import 'package:solar_iconkit/solar_iconkit.dart';
 
-              <Sub id="widget-api" title="Widget API">
-                <CodeBlock
-                  filename="main.dart"
-                  lang="dart"
-                  code={`// Minimum — default linear style, size from IconTheme (24 px fallback)
+// Minimum — default linear style, size from IconTheme (24 px fallback).
 SolarIcon(SolarIcons.home2)
 
-// Explicit style and size
+// Explicit style and size.
 SolarIcon(
   SolarIcons.heart,
-  style: SolarIconStyle.boldDuotone,
+  style: SolarIconStyle.bold,
   size: 32,
 )
 
-// Full API — every parameter
+// Fully-specified — every parameter that matters.
 SolarIcon(
   SolarIcons.rocket,
   style: SolarIconStyle.boldDuotone,
   size: 48,
-  color: Colors.deepPurple,
+  color: Theme.of(context).colorScheme.primary,
   opacity: 0.9,
   semanticLabel: 'Launch',
 )`}
-                />
-                <table className="w-full border-collapse text-[13px] mt-3">
-                  <thead>
-                    <tr className="border-b border-border">
-                      <th className="text-left py-2 pr-4 font-semibold">Parameter</th>
-                      <th className="text-left py-2 pr-4 font-semibold">Type</th>
-                      <th className="text-left py-2 font-semibold">Default</th>
-                    </tr>
-                  </thead>
-                  <tbody className="text-muted-foreground">
-                    <ParamRow name="name" type="String" def="required" />
-                    <ParamRow name="style" type="SolarIconStyle" def="linear" />
-                    <ParamRow name="size" type="double?" def="IconTheme → 24" />
-                    <ParamRow name="color" type="Color?" def="IconTheme → black87" />
-                    <ParamRow name="opacity" type="double" def="1.0" />
-                    <ParamRow name="semanticLabel" type="String?" def="null" />
-                    <ParamRow name="fit" type="BoxFit" def="BoxFit.contain" />
-                    <ParamRow name="alignment" type="AlignmentGeometry" def="Alignment.center" />
-                    <ParamRow name="matchTextDirection" type="bool" def="false" />
-                  </tbody>
-                </table>
+              />
+              <p>
+                No <code>init()</code> call, no font loading, no asset path to
+                remember, no <code>flutter_svg</code> import required from
+                consumer code.
+              </p>
+            </Section>
+
+            {/* Widget API -------------------------------------------- */}
+            <Section id="widget-api" title="Widget API">
+              <p>
+                <code>SolarIcon</code> is a <code>const</code>-constructible,
+                immutable <code>StatelessWidget</code>. Every parameter is
+                optional except the required positional <code>name</code>.
+              </p>
+              <table className="w-full border-collapse text-[13px]">
+                <thead>
+                  <tr className="border-b border-border">
+                    <th className="text-left py-2 pr-4 font-semibold">Parameter</th>
+                    <th className="text-left py-2 pr-4 font-semibold">Type</th>
+                    <th className="text-left py-2 font-semibold">Default</th>
+                  </tr>
+                </thead>
+                <tbody className="text-muted-foreground">
+                  <ParamRow name="name" type="String" def="required" />
+                  <ParamRow name="style" type="SolarIconStyle" def="linear" />
+                  <ParamRow name="size" type="double?" def="IconTheme → 24" />
+                  <ParamRow name="color" type="Color?" def="IconTheme → black87" />
+                  <ParamRow name="opacity" type="double" def="1.0" />
+                  <ParamRow name="semanticLabel" type="String?" def="null" />
+                  <ParamRow name="textDirection" type="TextDirection?" def="Directionality.of" />
+                  <ParamRow name="matchTextDirection" type="bool" def="false" />
+                  <ParamRow name="fit" type="BoxFit" def="BoxFit.contain" />
+                  <ParamRow name="alignment" type="AlignmentGeometry" def="Alignment.center" />
+                  <ParamRow name="blendMode" type="BlendMode" def="BlendMode.srcIn" />
+                  <ParamRow name="shadows" type="List<Shadow>?" def="null" />
+                  <ParamRow name="key" type="Key?" def="null" />
+                </tbody>
+              </table>
+
+              <Sub id="widget-api-resolution" title="How color and size resolve">
+                <p>
+                  Matches Flutter&apos;s built-in <code>Icon</code> widget
+                  resolution order:
+                </p>
+                <ol className="list-decimal ml-5 space-y-1 text-sm">
+                  <li>
+                    If passed explicitly on the widget, use that value.
+                  </li>
+                  <li>
+                    Otherwise read <code>IconTheme.of(context)</code>.
+                  </li>
+                  <li>
+                    Fall back to defaults (24 px, <code>Color(0xDD000000)</code>).
+                  </li>
+                </ol>
+                <p>
+                  Opacity is <em>multiplied</em> across both sources: widget{" "}
+                  <code>opacity: 0.5</code> combined with{" "}
+                  <code>IconTheme.opacity: 0.8</code> gives an effective alpha
+                  of 0.4.
+                </p>
               </Sub>
 
-              <Sub id="with-icontheme" title="With IconTheme">
+              <Sub id="widget-api-const" title="Const-constructibility">
                 <p>
-                  <code>SolarIcon</code> integrates with Flutter&apos;s built-in{" "}
-                  <code>IconTheme</code>. When <code>size</code> or{" "}
-                  <code>color</code> aren&apos;t set on the widget, they fall back
-                  to the ambient theme — matching the behaviour of Flutter&apos;s{" "}
-                  <code>Icon</code> widget.
+                  <code>SolarIcon</code>&apos;s constructor is <code>const</code>.
+                  Instances used in const contexts are cached by the Flutter
+                  framework and never trigger unnecessary rebuilds.
                 </p>
                 <CodeBlock
                   lang="dart"
-                  code={`IconTheme(
-  data: IconThemeData(color: Colors.indigo, size: 20),
-  child: Row(children: [
-    SolarIcon(SolarIcons.home2),   // picks up indigo + size 20
-    SolarIcon(SolarIcons.heart),   // same
-  ]),
-)
+                  code={`class HomeButton extends StatelessWidget {
+  const HomeButton({super.key});
 
-// Under MaterialApp, ThemeData.iconTheme themes every SolarIcon:
-MaterialApp(
-  theme: ThemeData(
-    iconTheme: IconThemeData(color: Colors.black87, size: 24),
-  ),
-  home: MyApp(),
-)`}
+  @override
+  Widget build(BuildContext context) {
+    // \`const\` here means Flutter reuses the same widget instance
+    // across every rebuild — zero allocation cost.
+    return const SolarIcon(SolarIcons.home2);
+  }
+}`}
                 />
               </Sub>
 
-              <Sub id="in-buttons" title="In buttons and lists">
+              <Sub id="widget-api-statics" title="Static helpers">
+                <ul className="text-sm space-y-1">
+                  <li>
+                    <code>SolarIcon.assetPath(name, style)</code> — returns the
+                    raw asset path. Useful for <code>precachePicture</code> or
+                    building your own <code>SvgAssetLoader</code>.
+                  </li>
+                  <li>
+                    <code>SolarIcon.packageName</code> — the string{" "}
+                    <code>&apos;solar_iconkit&apos;</code>. Useful when passing
+                    to <code>SvgAssetLoader</code> directly.
+                  </li>
+                </ul>
+              </Sub>
+
+              <Sub id="widget-api-validation" title="Debug validation (new in 1.0.2)">
+                <p>
+                  In debug and profile builds, <code>SolarIcon</code> throws a
+                  clear <code>FlutterError</code> when constructed with a name
+                  that isn&apos;t in the Solar catalog. The assertion is
+                  stripped from release builds so there is zero production
+                  cost.
+                </p>
                 <CodeBlock
                   lang="dart"
-                  code={`// Icon-only button
-IconButton(
-  onPressed: onDelete,
-  icon: SolarIcon(SolarIcons.trashBinTrash),
-  tooltip: 'Delete',
-)
-
-// Filled button with leading icon
-FilledButton.icon(
-  onPressed: onDownload,
-  icon: SolarIcon(SolarIcons.download, size: 18, color: Colors.white),
-  label: const Text('Download'),
-)
-
-// ListTile
-ListTile(
-  leading: SolarIcon(
-    SolarIcons.folder,
-    style: SolarIconStyle.boldDuotone,
-    color: Colors.amber,
-  ),
-  title: const Text('Documents'),
-  trailing: SolarIcon(SolarIcons.altArrowRight, size: 18),
-  onTap: () {},
-)
-
-// NavigationBar with distinct selected style
-NavigationBar(
-  destinations: [
-    NavigationDestination(
-      icon: SolarIcon(SolarIcons.home2),
-      selectedIcon: SolarIcon(SolarIcons.home2, style: SolarIconStyle.bold),
-      label: 'Home',
-    ),
-  ],
-)`}
+                  code={`// Debug: throws FlutterError with a stack trace pointing here.
+// Release: renders a blank square (same as pre-1.0.2 behaviour).
+SolarIcon('totally-typoed-name')`}
                 />
+                <p>
+                  Prefer the <code>SolarIcons.xxx</code> constants — the Dart
+                  analyzer catches typos at compile time, before you ever hit
+                  the runtime assertion.
+                </p>
               </Sub>
             </Section>
 
             {/* Styles ------------------------------------------------- */}
             <Section id="styles" title="Styles">
               <p>
-                Every Solar icon comes in six distinct styles. Each has a specific
-                visual character and works best in certain contexts.
+                Six native styles per icon. Each has a distinct visual character
+                and pairs with specific UI roles.
               </p>
               <StylesTable />
-              <div className="rounded-xl border border-border/60 bg-muted/40 p-4 text-sm">
-                <div className="flex items-start gap-2">
-                  <Icon
-                    icon="solar:lightbulb-bold-duotone"
-                    width={18}
-                    height={18}
-                    className="text-primary shrink-0 mt-0.5"
-                  />
-                  <div>
-                    <strong>Recommendation:</strong> use <code>linear</code> for
-                    chrome, promote to <code>bold</code> for active/selected
-                    states, and reserve <code>boldDuotone</code> for feature
-                    moments.
-                  </div>
-                </div>
-              </div>
+              <Callout icon="solar:lightbulb-bold-duotone" tone="tip">
+                <strong>Recommendation.</strong> Use <code>linear</code> for
+                chrome, promote to <code>bold</code> for active or selected
+                states, and reserve <code>boldDuotone</code> for feature
+                moments and hero areas.
+              </Callout>
             </Section>
 
-            {/* Naming ------------------------------------------------- */}
+            {/* Recipes ------------------------------------------------ */}
+            <Section id="recipes" title="Recipes">
+              <p>
+                Common Flutter patterns using <code>SolarIcon</code>. Copy
+                any snippet and adapt.
+              </p>
+
+              <Sub id="in-buttons" title="Buttons">
+                <p>Icon-only:</p>
+                <CodeBlock
+                  lang="dart"
+                  code={`IconButton(
+  onPressed: onDelete,
+  icon: SolarIcon(SolarIcons.trashBinTrash),
+  tooltip: 'Delete',
+)`}
+                />
+                <p>Leading icon on a filled button:</p>
+                <CodeBlock
+                  lang="dart"
+                  code={`FilledButton.icon(
+  onPressed: onDownload,
+  icon: SolarIcon(
+    SolarIcons.download,
+    size: 18,
+    color: Colors.white,
+  ),
+  label: const Text('Download'),
+)`}
+                />
+                <p>Segmented button:</p>
+                <CodeBlock
+                  lang="dart"
+                  code={`SegmentedButton<int>(
+  segments: [
+    ButtonSegment(
+      value: 0,
+      icon: SolarIcon(SolarIcons.listCheck, size: 16),
+      label: const Text('List'),
+    ),
+    ButtonSegment(
+      value: 1,
+      icon: SolarIcon(SolarIcons.widget5, size: 16),
+      label: const Text('Grid'),
+    ),
+  ],
+  selected: {selectedView},
+  onSelectionChanged: (s) => setState(() => selectedView = s.first),
+)`}
+                />
+              </Sub>
+
+              <Sub id="in-lists" title="Lists and tiles">
+                <CodeBlock
+                  lang="dart"
+                  code={`ListTile(
+  leading: SolarIcon(
+    SolarIcons.folder,
+    style: SolarIconStyle.boldDuotone,
+    color: Colors.amber,
+  ),
+  title: const Text('Documents'),
+  subtitle: const Text('12 files'),
+  trailing: SolarIcon(SolarIcons.altArrowRight, size: 18),
+  onTap: () {},
+)`}
+                />
+                <p>Inside a drawer with a leading style set:</p>
+                <CodeBlock
+                  lang="dart"
+                  code={`IconTheme(
+  data: const IconThemeData(size: 22),
+  child: Drawer(
+    child: ListView(
+      children: const [
+        DrawerHeader(child: Text('Menu')),
+        ListTile(leading: SolarIcon(SolarIcons.home2), title: Text('Home')),
+        ListTile(leading: SolarIcon(SolarIcons.settings), title: Text('Settings')),
+        ListTile(leading: SolarIcon(SolarIcons.logout), title: Text('Sign out')),
+      ],
+    ),
+  ),
+)`}
+                />
+              </Sub>
+
+              <Sub id="in-appbar" title="App bars">
+                <CodeBlock
+                  lang="dart"
+                  code={`AppBar(
+  leading: IconButton(
+    icon: const SolarIcon(SolarIcons.hamburgerMenu),
+    onPressed: () => Scaffold.of(context).openDrawer(),
+  ),
+  title: const Text('Solar'),
+  actions: [
+    IconButton(
+      icon: const SolarIcon(SolarIcons.bell),
+      onPressed: () {},
+    ),
+    IconButton(
+      icon: const SolarIcon(SolarIcons.settings),
+      onPressed: () {},
+    ),
+  ],
+)`}
+                />
+                <p>A tab bar with icon-only tabs:</p>
+                <CodeBlock
+                  lang="dart"
+                  code={`TabBar(
+  tabs: const [
+    Tab(icon: SolarIcon(SolarIcons.gallery)),
+    Tab(icon: SolarIcon(SolarIcons.videoLibrary)),
+    Tab(icon: SolarIcon(SolarIcons.musicLibrary2)),
+  ],
+)`}
+                />
+              </Sub>
+
+              <Sub id="in-forms" title="Text fields">
+                <CodeBlock
+                  lang="dart"
+                  code={`TextField(
+  decoration: InputDecoration(
+    prefixIcon: Padding(
+      padding: const EdgeInsets.all(12),
+      child: SolarIcon(SolarIcons.magnifer, size: 18),
+    ),
+    suffixIcon: IconButton(
+      icon: const SolarIcon(SolarIcons.closeCircle, size: 18),
+      onPressed: _clear,
+    ),
+    hintText: 'Search...',
+    border: const OutlineInputBorder(),
+  ),
+)`}
+                />
+                <p>
+                  <code>prefixIcon</code> / <code>suffixIcon</code> use a fixed
+                  size internally; wrap in <code>Padding</code> or set{" "}
+                  <code>prefixIconConstraints</code> if you need custom sizing.
+                </p>
+              </Sub>
+
+              <Sub id="in-navbars" title="Navigation bars">
+                <CodeBlock
+                  lang="dart"
+                  code={`NavigationBar(
+  selectedIndex: _index,
+  onDestinationSelected: (i) => setState(() => _index = i),
+  destinations: const [
+    NavigationDestination(
+      icon: SolarIcon(SolarIcons.home2),
+      selectedIcon: SolarIcon(SolarIcons.home2, style: SolarIconStyle.bold),
+      label: 'Home',
+    ),
+    NavigationDestination(
+      icon: SolarIcon(SolarIcons.magnifer),
+      selectedIcon: SolarIcon(SolarIcons.magnifer, style: SolarIconStyle.bold),
+      label: 'Search',
+    ),
+    NavigationDestination(
+      icon: SolarIcon(SolarIcons.user),
+      selectedIcon: SolarIcon(SolarIcons.user, style: SolarIconStyle.bold),
+      label: 'Profile',
+    ),
+  ],
+)`}
+                />
+                <p>
+                  Swap <code>style</code> between{" "}
+                  <code>SolarIconStyle.linear</code> (idle) and{" "}
+                  <code>SolarIconStyle.bold</code> (selected) for a subtle,
+                  weight-based selection indicator that&apos;s standard in
+                  modern nav bars.
+                </p>
+              </Sub>
+
+              <Sub id="coloring" title="Coloring">
+                <p>Four progressively integrated approaches:</p>
+                <CodeBlock
+                  lang="dart"
+                  code={`// 1. Explicit color.
+SolarIcon(SolarIcons.heart, color: Colors.red)
+
+// 2. Inherited from an ambient IconTheme (matches Flutter's Icon widget).
+IconTheme(
+  data: const IconThemeData(color: Colors.blueAccent),
+  child: SolarIcon(SolarIcons.star),
+)
+
+// 3. Theme-driven — recolors on brightness / theme changes.
+SolarIcon(
+  SolarIcons.settings,
+  color: Theme.of(context).colorScheme.primary,
+)
+
+// 4. Duotone with color-preserved accent — the 50% opacity accent
+// remains translucent while the base takes your color.
+SolarIcon(
+  SolarIcons.rocket,
+  style: SolarIconStyle.boldDuotone,
+  color: Colors.deepPurple,
+)`}
+                />
+              </Sub>
+
+              <Sub id="with-icontheme" title="IconTheme scoping">
+                <p>
+                  <code>SolarIcon</code> reads{" "}
+                  <code>IconTheme.of(context)</code> when the widget doesn&apos;t
+                  set <code>size</code>, <code>color</code>, or{" "}
+                  <code>opacity</code> explicitly. Wrap a subtree to theme
+                  every <code>SolarIcon</code> inside it at once:
+                </p>
+                <CodeBlock
+                  lang="dart"
+                  code={`IconTheme(
+  data: const IconThemeData(color: Colors.indigo, size: 20),
+  child: Row(children: const [
+    SolarIcon(SolarIcons.home2),   // picks up indigo + size 20
+    SolarIcon(SolarIcons.heart),   // same
+  ]),
+)`}
+                />
+                <p>
+                  Under <code>MaterialApp</code>,{" "}
+                  <code>IconTheme.of(context)</code> returns{" "}
+                  <code>Theme.of(context).iconTheme</code>. Setting{" "}
+                  <code>iconTheme</code> on <code>ThemeData</code> themes every{" "}
+                  <code>SolarIcon</code> in the entire app:
+                </p>
+                <CodeBlock
+                  lang="dart"
+                  code={`MaterialApp(
+  theme: ThemeData(
+    iconTheme: const IconThemeData(
+      color: Colors.black87,
+      size: 24,
+      opacity: 0.9,
+    ),
+  ),
+  home: const MyApp(),
+)`}
+                />
+              </Sub>
+
+              <Sub id="shadows" title="Drop shadows">
+                <p>
+                  Mirroring the <code>shadows</code> parameter on Flutter&apos;s
+                  built-in <code>Icon</code> widget: pass a{" "}
+                  <code>List&lt;Shadow&gt;</code> to paint blurred, offset copies
+                  of the icon behind the main render.
+                </p>
+                <CodeBlock
+                  lang="dart"
+                  code={`SolarIcon(
+  SolarIcons.heart,
+  style: SolarIconStyle.bold,
+  color: Colors.red,
+  shadows: const [
+    Shadow(
+      color: Colors.black26,
+      blurRadius: 6,
+      offset: Offset(0, 2),
+    ),
+  ],
+)`}
+                />
+                <p>
+                  Cheap for one or two shadows. Avoid long shadow lists in
+                  scrolling contexts — each shadow is rendered as a separate
+                  filtered pass.
+                </p>
+              </Sub>
+
+              <Sub id="blend-modes" title="Blend modes">
+                <p>
+                  Defaults to <code>BlendMode.srcIn</code> — the standard
+                  &quot;recolor an icon&quot; behaviour that replaces the icon&apos;s
+                  color while preserving alpha.
+                </p>
+                <CodeBlock
+                  lang="dart"
+                  code={`// Default — flat color replacement.
+SolarIcon(SolarIcons.rocket, color: Colors.blue)
+
+// Multiply — icon interacts with the background instead of
+// replacing pixels. Great over textured / gradient backgrounds.
+SolarIcon(
+  SolarIcons.rocket,
+  color: Colors.blue,
+  blendMode: BlendMode.multiply,
+)
+
+// Dst — keep the SVG's native colors, ignore the color argument.
+SolarIcon(
+  SolarIcons.rocket,
+  blendMode: BlendMode.dst,
+)`}
+                />
+              </Sub>
+
+              <Sub id="animation" title="Animated transitions">
+                <p>Cross-fade between styles:</p>
+                <CodeBlock
+                  lang="dart"
+                  code={`AnimatedSwitcher(
+  duration: const Duration(milliseconds: 200),
+  child: SolarIcon(
+    SolarIcons.heart,
+    key: ValueKey(_liked ? 'bold' : 'linear'),
+    style: _liked ? SolarIconStyle.bold : SolarIconStyle.linear,
+    color: _liked ? Colors.red : null,
+  ),
+)`}
+                />
+                <p>Animate size with a tween:</p>
+                <CodeBlock
+                  lang="dart"
+                  code={`TweenAnimationBuilder<double>(
+  tween: Tween(begin: 24, end: _big ? 48 : 24),
+  duration: const Duration(milliseconds: 250),
+  curve: Curves.easeOutCubic,
+  builder: (context, size, _) =>
+      SolarIcon(SolarIcons.home2, size: size),
+)`}
+                />
+              </Sub>
+            </Section>
+
+            {/* Custom effects --------------------------------------- */}
+            <Section id="custom-effects" title="Custom effects">
+              <p>
+                <code>SolarIcon</code> composes cleanly with Flutter&apos;s
+                paint pipeline. Combine it with <code>ShaderMask</code>,{" "}
+                <code>Container</code> decorations, <code>BackdropFilter</code>,
+                and the built-in <code>shadows</code> parameter to build
+                app-icon-grade visual effects — no external libraries required.
+              </p>
+              <p>
+                Every effect below is a self-contained widget. Copy the code,
+                swap the icon, tune the colors.
+              </p>
+
+              <EffectDemo
+                id="fx-gradient"
+                title="Gradient sheen"
+                description="Paint the icon with a linear gradient using a ShaderMask. The gradient replaces the icon's color while preserving alpha — the two-tone effect from duotone styles stays intact."
+                preview={
+                  <TilePreview
+                    background="linear-gradient(135deg, #FDBA74 0%, #EC4899 100%)"
+                    icon="solar:heart-bold-duotone"
+                  />
+                }
+                code={`ShaderMask(
+  shaderCallback: (bounds) => const LinearGradient(
+    begin: Alignment.topLeft,
+    end: Alignment.bottomRight,
+    colors: [Color(0xFFFDBA74), Color(0xFFEC4899)],
+  ).createShader(bounds),
+  blendMode: BlendMode.srcIn,
+  child: const SolarIcon(
+    SolarIcons.heart,
+    style: SolarIconStyle.boldDuotone,
+    size: 56,
+    color: Colors.white, // required for ShaderMask srcIn
+  ),
+)`}
+              />
+
+              <EffectDemo
+                id="fx-tile"
+                title="App-icon tile"
+                description="A vibrant rounded tile with a matching-color glow shadow. This is the pattern used by native app icons on iOS and Android — great for feature cards and home-screen-style grids."
+                preview={
+                  <TilePreview
+                    background="linear-gradient(135deg, #F97316 0%, #EA580C 100%)"
+                    icon="solar:rocket-bold-duotone"
+                    shadow="0 14px 32px -6px rgba(249, 115, 22, 0.5)"
+                    rounded
+                  />
+                }
+                code={`Container(
+  width: 72,
+  height: 72,
+  decoration: BoxDecoration(
+    borderRadius: BorderRadius.circular(22),
+    gradient: const LinearGradient(
+      begin: Alignment.topLeft,
+      end: Alignment.bottomRight,
+      colors: [Color(0xFFF97316), Color(0xFFEA580C)],
+    ),
+    boxShadow: [
+      BoxShadow(
+        color: const Color(0xFFF97316).withValues(alpha: 0.5),
+        blurRadius: 32,
+        spreadRadius: 2,
+        offset: const Offset(0, 14),
+      ),
+    ],
+  ),
+  child: const Center(
+    child: SolarIcon(
+      SolarIcons.rocket,
+      style: SolarIconStyle.boldDuotone,
+      size: 36,
+      color: Colors.white,
+    ),
+  ),
+)`}
+              />
+
+              <EffectDemo
+                id="fx-glow"
+                title="Colored glow"
+                description="A single soft drop shadow in the icon's own color makes it feel lit-from-within. Pair with SolarIconStyle.boldDuotone for maximum impact."
+                preview={
+                  <PlainIconPreview
+                    icon="solar:star-bold-duotone"
+                    color="#FACC15"
+                    glow="#FACC15"
+                    glowBlur={20}
+                  />
+                }
+                code={`const SolarIcon(
+  SolarIcons.star,
+  style: SolarIconStyle.boldDuotone,
+  size: 56,
+  color: Color(0xFFFACC15),
+  shadows: [
+    Shadow(
+      color: Color(0x80FACC15),
+      blurRadius: 24,
+      offset: Offset(0, 6),
+    ),
+  ],
+)`}
+              />
+
+              <EffectDemo
+                id="fx-neon"
+                title="Neon"
+                description="Stack multiple shadows of increasing blur radius to create a bright neon halo. Best against a dark background where the color bleed is visible."
+                preview={
+                  <PlainIconPreview
+                    icon="solar:star-bold"
+                    color="#ffffff"
+                    background="#0a0a0a"
+                    neon="#22D3EE"
+                  />
+                }
+                code={`const SolarIcon(
+  SolarIcons.star,
+  style: SolarIconStyle.bold,
+  size: 56,
+  color: Colors.white,
+  shadows: [
+    Shadow(color: Color(0xFF22D3EE), blurRadius: 6),
+    Shadow(color: Color(0xFF22D3EE), blurRadius: 16),
+    Shadow(color: Color(0xFF22D3EE), blurRadius: 32),
+  ],
+)`}
+              />
+
+              <EffectDemo
+                id="fx-glass"
+                title="Frosted glass"
+                description="A translucent white icon on a colored gradient with a subtle border. Emulates the iOS 'glass' effect popular in 2024 design systems."
+                preview={
+                  <TilePreview
+                    background="linear-gradient(135deg, #6366F1 0%, #8B5CF6 50%, #EC4899 100%)"
+                    icon="solar:magic-stick-3-bold-duotone"
+                    frosted
+                    rounded
+                  />
+                }
+                code={`Container(
+  width: 72,
+  height: 72,
+  decoration: BoxDecoration(
+    borderRadius: BorderRadius.circular(22),
+    gradient: const LinearGradient(
+      begin: Alignment.topLeft,
+      end: Alignment.bottomRight,
+      colors: [
+        Color(0xFF6366F1),
+        Color(0xFF8B5CF6),
+        Color(0xFFEC4899),
+      ],
+    ),
+  ),
+  child: ClipRRect(
+    borderRadius: BorderRadius.circular(22),
+    child: BackdropFilter(
+      filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+      child: Container(
+        decoration: BoxDecoration(
+          color: Colors.white.withValues(alpha: 0.15),
+          border: Border.all(
+            color: Colors.white.withValues(alpha: 0.3),
+            width: 1,
+          ),
+          borderRadius: BorderRadius.circular(22),
+        ),
+        child: const Center(
+          child: SolarIcon(
+            SolarIcons.magicStick3,
+            style: SolarIconStyle.boldDuotone,
+            size: 36,
+            color: Colors.white,
+          ),
+        ),
+      ),
+    ),
+  ),
+)`}
+              />
+
+              <EffectDemo
+                id="fx-outline-glow"
+                title="Outline glow (dual layer)"
+                description="Layer a bold-duotone icon over a semi-transparent Bold variant to fake a soft outer stroke. Cheap trick, striking result."
+                preview={
+                  <PlainIconPreview
+                    icon="solar:heart-bold-duotone"
+                    color="#FB7185"
+                    glow="#FB7185"
+                    glowBlur={12}
+                  />
+                }
+                code={`Stack(
+  alignment: Alignment.center,
+  children: [
+    // Faux outline — a larger, low-alpha bold icon behind.
+    SolarIcon(
+      SolarIcons.heart,
+      style: SolarIconStyle.bold,
+      size: 60,
+      color: const Color(0xFFFB7185).withValues(alpha: 0.25),
+    ),
+    // Main icon on top.
+    const SolarIcon(
+      SolarIcons.heart,
+      style: SolarIconStyle.boldDuotone,
+      size: 48,
+      color: Color(0xFFFB7185),
+    ),
+  ],
+)`}
+              />
+
+              <Callout icon="solar:lightbulb-bold-duotone" tone="tip">
+                <strong>All effects work in const contexts</strong> when their
+                arguments are compile-time constants. Wrapper widgets
+                (<code>ShaderMask</code>, <code>Container</code>,{" "}
+                <code>Stack</code>) are non-const, but the <code>SolarIcon</code>{" "}
+                inside stays <code>const</code> — Flutter still avoids
+                unnecessary rebuilds.
+              </Callout>
+            </Section>
+
+            {/* Naming ------------------------------------------------ */}
             <Section id="naming" title="Icon naming">
               <p>
-                Solar icon names are kebab-case (<code>alt-arrow-down</code>,{" "}
-                <code>home-2</code>). The Flutter package converts them to
-                camelCase Dart identifiers. Iconify identifiers on this browser
-                follow the pattern{" "}
-                <code>solar:&lt;name&gt;-&lt;style&gt;</code>.
+                Solar names use <strong>kebab-case</strong> (e.g.{" "}
+                <code>alt-arrow-down</code>, <code>home-2</code>). The Flutter
+                package converts them to <strong>camelCase</strong> Dart
+                identifiers on <code>SolarIcons</code>.
               </p>
-              <CodeBlock
-                lang="dart"
-                code={`SolarIcons.home2           // "home-2"
-SolarIcons.altArrowDown    // "alt-arrow-down"
-SolarIcons.i4k             // "4k"    → leading digit gets 'i' prefix
-SolarIcons.caseIcon        // "case"  → Dart reserved word gets 'Icon' suffix
-SolarIcons.all             // List<String> of every icon`}
-              />
-              <p>Iconify identifiers used in the browser and SVG source:</p>
+              <table className="w-full border-collapse text-[13px] mt-4">
+                <thead>
+                  <tr className="border-b border-border">
+                    <th className="text-left py-2 pr-4 font-semibold">Input</th>
+                    <th className="text-left py-2 pr-4 font-semibold">Dart identifier</th>
+                    <th className="text-left py-2 font-semibold">Rule</th>
+                  </tr>
+                </thead>
+                <tbody className="text-muted-foreground">
+                  <NamingRow input="home" out="home" rule="plain identifier" />
+                  <NamingRow input="home-2" out="home2" rule="kebab → camelCase" />
+                  <NamingRow input="alt-arrow-down" out="altArrowDown" rule="multi-word camelCase" />
+                  <NamingRow input="4k" out="i4k" rule="leading digit prefixed with 'i'" />
+                  <NamingRow input="case" out="caseIcon" rule="Dart reserved word → suffix 'Icon'" />
+                  <NamingRow input="duplicate" out="duplicate2" rule="collision → numeric suffix" />
+                </tbody>
+              </table>
+              <p>
+                Iconify identifiers used at runtime follow the pattern{" "}
+                <code>solar:&lt;name&gt;-&lt;style&gt;</code>:
+              </p>
               <CodeBlock
                 lang="text"
                 code={`solar:home-2-linear         → Linear style
 solar:home-2-outline        → Outline style
 solar:home-2-broken         → Broken stroke
 solar:home-2-bold           → Bold filled
-solar:home-2-line-duotone   → Line Duotone
-solar:home-2-bold-duotone   → Bold Duotone`}
+solar:home-2-line-duotone   → Line duotone
+solar:home-2-bold-duotone   → Bold duotone`}
+              />
+              <Callout icon="solar:info-circle-bold-duotone" tone="info">
+                Every constant on the <code>SolarIcons</code> class carries a
+                Dartdoc comment (<code>Solar icon &quot;X&quot;.</code>) so
+                autocomplete / hover in your IDE reveals the source name.
+              </Callout>
+            </Section>
+
+            {/* Accessibility ----------------------------------------- */}
+            <Section id="accessibility" title="Accessibility">
+              <p>
+                Screen readers treat unlabeled decorative icons as skippable.
+                Provide a <code>semanticLabel</code> on any icon that carries
+                meaning without a visible text label:
+              </p>
+              <CodeBlock
+                lang="dart"
+                code={`IconButton(
+  onPressed: _delete,
+  icon: SolarIcon(
+    SolarIcons.trashBinTrash,
+    semanticLabel: 'Delete this item',
+  ),
+)`}
+              />
+              <p>
+                Do <strong>not</strong> set <code>semanticLabel</code> on icons
+                that sit next to visible descriptive text — the label would be
+                announced twice by the screen reader.
+              </p>
+              <p>
+                When <code>semanticLabel</code> is null, <code>SolarIcon</code>{" "}
+                automatically wraps the rendered SVG in{" "}
+                <code>ExcludeSemantics</code>. Decorative icons produce zero
+                announcements. This is the correct default for the majority of
+                icons in a UI.
+              </p>
+            </Section>
+
+            {/* RTL / i18n -------------------------------------------- */}
+            <Section id="rtl" title="RTL and text direction">
+              <p>
+                Directional icons (arrows, chevrons, forward, back) should
+                mirror horizontally under right-to-left locales. Set{" "}
+                <code>matchTextDirection: true</code>:
+              </p>
+              <CodeBlock
+                lang="dart"
+                code={`SolarIcon(
+  SolarIcons.altArrowRight,
+  matchTextDirection: true,
+)`}
+              />
+              <p>
+                <code>SolarIcon</code> reads{" "}
+                <code>Directionality.of(context)</code> to determine current
+                direction. Pass <code>textDirection</code> to override for a
+                specific instance:
+              </p>
+              <CodeBlock
+                lang="dart"
+                code={`SolarIcon(
+  SolarIcons.altArrowRight,
+  matchTextDirection: true,
+  textDirection: TextDirection.rtl, // force flip regardless of context
+)`}
+              />
+              <p>
+                Non-directional icons (settings, heart, home) never mirror —
+                leave <code>matchTextDirection</code> at its default{" "}
+                <code>false</code>.
+              </p>
+            </Section>
+
+            {/* Performance ------------------------------------------- */}
+            <Section id="performance" title="Performance">
+              <ul className="space-y-2 text-sm">
+                <li>
+                  <strong>Const-constructible.</strong> Reuse instances in{" "}
+                  <code>const</code> contexts to skip allocation. Rebuilds are
+                  cheap because <code>SvgPicture.asset</code> caches its
+                  decoded picture per icon path.
+                </li>
+                <li>
+                  <strong>Strict layout box.</strong> A{" "}
+                  <code>SizedBox.square</code> wrapper enforces the requested
+                  size — icons never overflow or shrink a parent unexpectedly.
+                </li>
+                <li>
+                  <strong>Per-icon decode cost.</strong>{" "}
+                  <code>flutter_svg</code> parses each SVG and rasterises to a
+                  cached <code>Picture</code> the first time it renders —
+                  typically well under 1 ms. Subsequent instances of the same
+                  icon reuse the cached picture.
+                </li>
+                <li>
+                  <strong>Startup cost is zero.</strong> SVG files are read
+                  only when the corresponding widget first mounts. Package
+                  assets are bundled but not decoded eagerly.
+                </li>
+                <li>
+                  <strong>Semantic hygiene.</strong> Decorative icons wrap in{" "}
+                  <code>ExcludeSemantics</code> automatically — screen readers
+                  do not receive noise from every icon on screen.
+                </li>
+              </ul>
+              <Sub id="performance-precache" title="Precaching in long lists">
+                <p>
+                  As new cards appear on-screen, each unique icon decodes once.
+                  In a long list, that first frame can jank. Precache visible
+                  icons up-front:
+                </p>
+                <CodeBlock
+                  lang="dart"
+                  code={`Future<void> precacheSolarIcons(
+  BuildContext context,
+  List<String> names,
+  SolarIconStyle style,
+) async {
+  for (final name in names) {
+    await precachePicture(
+      SvgAssetLoader(
+        'assets/icons/\${style.folderName}/\$name.svg',
+        packageName: 'solar_iconkit',
+      ),
+      context,
+    );
+  }
+}`}
+                />
+                <p>
+                  Call from an <code>initState</code> or route-enter callback
+                  for icons visible in the first screen.
+                </p>
+              </Sub>
+            </Section>
+
+            {/* Bundle size ------------------------------------------- */}
+            <Section id="bundle-size" title="Bundle size">
+              <p>
+                The full asset bundle is <strong>~6.1 MB of raw SVG bytes</strong>{" "}
+                across all six styles (7,386 individually-minified files).
+                Compressed on the pub.dev archive: about 18 MB including the
+                example app, tests, and screenshots.
+              </p>
+              <p>
+                Flutter&apos;s tree-shaker doesn&apos;t remove unreferenced
+                assets because <code>SolarIcon</code> resolves paths at runtime
+                — so the whole set ships by default.
+              </p>
+              <Sub id="bundle-size-trim" title="Trimming unused styles">
+                <p>
+                  If your app uses only a couple of styles, fork the package
+                  (or use a <code>dependency_overrides</code> path) and edit{" "}
+                  <code>pubspec.yaml</code>:
+                </p>
+                <CodeBlock
+                  lang="yaml"
+                  code={`flutter:
+  assets:
+    - assets/icons/linear/
+    - assets/icons/bold/
+    # remove the styles you do not use`}
+                />
+                <p>
+                  Then delete the unused style folders under{" "}
+                  <code>assets/icons/</code>. The build only includes assets
+                  you declare. Cutting from 6 styles to 2 removes roughly two
+                  thirds of the bundle.
+                </p>
+              </Sub>
+              <Callout icon="solar:rocket-2-bold-duotone" tone="tip">
+                <strong>Roadmap.</strong> Per-icon tree-shaking (via a{" "}
+                <code>build_runner</code> step that scans consumer code for{" "}
+                <code>SolarIcons.xxx</code> references and emits an asset
+                subset) is planned for <code>v2.0</code>. Track progress at{" "}
+                <a
+                  href="https://github.com/sovankentech/solar_iconkit/issues"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-primary underline underline-offset-2"
+                >
+                  the issues page
+                </a>
+                .
+              </Callout>
+            </Section>
+
+            {/* Testing ----------------------------------------------- */}
+            <Section id="testing" title="Testing">
+              <p>Basic widget test:</p>
+              <CodeBlock
+                lang="dart"
+                code={`import 'package:flutter/material.dart';
+import 'package:flutter_test/flutter_test.dart';
+import 'package:solar_iconkit/solar_iconkit.dart';
+
+void main() {
+  testWidgets('SolarIcon renders with expected props', (tester) async {
+    await tester.pumpWidget(const MaterialApp(
+      home: Scaffold(
+        body: SolarIcon(
+          SolarIcons.heart,
+          style: SolarIconStyle.bold,
+          size: 48,
+        ),
+      ),
+    ));
+
+    final widget = tester.widget<SolarIcon>(find.byType(SolarIcon));
+    expect(widget.name, 'heart');
+    expect(widget.style, SolarIconStyle.bold);
+    expect(widget.size, 48);
+  });
+}`}
+              />
+              <p>
+                Golden tests are supported out of the box — the widget produces
+                deterministic output for any (name, style, size, color)
+                combination.
+              </p>
+              <CodeBlock
+                lang="dart"
+                code={`testWidgets('boldDuotone home-2 golden', (tester) async {
+  await tester.pumpWidget(const MaterialApp(
+    home: Center(
+      child: SolarIcon(
+        SolarIcons.home2,
+        style: SolarIconStyle.boldDuotone,
+        size: 96,
+      ),
+    ),
+  ));
+  await tester.pumpAndSettle();
+  await expectLater(
+    find.byType(SolarIcon),
+    matchesGoldenFile('goldens/home-2-boldDuotone.png'),
+  );
+});`}
+              />
+              <p>
+                Regenerate goldens with{" "}
+                <code>flutter test --update-goldens</code>. Lock to a single
+                platform (usually Linux) for cross-platform test consistency —
+                font and SVG rasterization can vary subtly between OSes.
+              </p>
+            </Section>
+
+            {/* Troubleshooting -------------------------------------- */}
+            <Section id="troubleshooting" title="Troubleshooting">
+              <FAQ
+                q="The icon renders as an empty space."
+                a={
+                  <>
+                    Check the icon name spelling. Since 1.0.2, unknown names
+                    throw a <code>FlutterError</code> in debug builds — if you
+                    see nothing at all, you might be running a release build
+                    (assertions stripped) or the name might be off by one
+                    character. Prefer the <code>SolarIcons.&lt;name&gt;</code>{" "}
+                    constants so the analyzer catches typos.
+                  </>
+                }
+              />
+              <FAQ
+                q="&quot;Unable to load asset: assets/icons/linear/xxx.svg&quot; at runtime."
+                a="The base name exists in one style but not another (extremely rare upstream). Confirm the file exists under packages/solar_iconkit/assets/icons/{style}/. If genuinely missing, open an issue on GitHub."
+              />
+              <FAQ
+                q="&quot;A value of type 'List<dynamic>' can't be assigned to 'List<String>'.&quot;"
+                a={
+                  <>
+                    The Dart analyzer sometimes infers <code>SolarIcons.all</code>{" "}
+                    as <code>List&lt;dynamic&gt;</code> right after the
+                    generated file is loaded. Force-refresh with{" "}
+                    <code>flutter clean &amp;&amp; flutter pub get</code>, then
+                    restart the Dart analysis server in your IDE (VS Code:{" "}
+                    <em>Dart: Restart Analysis Server</em>).
+                  </>
+                }
+              />
+              <FAQ
+                q="Icons look pixelated."
+                a="SVGs do not pixelate. If you observe blurriness, check for parent widgets applying non-integer Transform.scale or FilterQuality.none."
+              />
+              <FAQ
+                q="Icon color doesn't update on theme change."
+                a={
+                  <>
+                    Verify you&apos;re passing a color from{" "}
+                    <code>Theme.of(context)</code> (a rebuild-tracked source),
+                    not a captured constant. <code>SolarIcon</code> rebuilds
+                    when its <code>color</code> prop changes; the surrounding
+                    widget must also rebuild when the theme changes.
+                  </>
+                }
+              />
+              <FAQ
+                q="flutter_svg version conflict with another package."
+                a={
+                  <>
+                    <code>solar_iconkit</code> pins{" "}
+                    <code>flutter_svg: ^2.0.10</code>. If a peer package pins a
+                    lower version, run <code>flutter pub upgrade flutter_svg</code>.
+                    If two packages pin incompatible ranges, use{" "}
+                    <code>dependency_overrides</code> to force a single version.
+                  </>
+                }
               />
             </Section>
 
-            {/* Credits ------------------------------------------------ */}
+            {/* Versioning ------------------------------------------- */}
+            <Section id="versioning" title="Versioning">
+              <p>
+                <code>solar_iconkit</code> follows{" "}
+                <a
+                  href="https://semver.org"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-primary underline underline-offset-2"
+                >
+                  Semantic Versioning 2.0.0
+                </a>
+                . Since 1.0, the API is committed to stability:
+              </p>
+              <ul className="text-sm space-y-1 mt-2 ml-5 list-disc">
+                <li>
+                  <strong>1.x.y patch bumps</strong> — bug fixes, doc updates,
+                  and non-breaking internal improvements.
+                </li>
+                <li>
+                  <strong>1.x minor bumps</strong> — new optional widget
+                  parameters, new icons pulled from Solar upstream.
+                </li>
+                <li>
+                  <strong>2.0</strong> — reserved for breaking API changes
+                  (per-icon tree-shaking, per-style sub-packages, etc.).
+                </li>
+              </ul>
+              <p className="mt-3">
+                Pin <code>^1.0.0</code> to safely receive every 1.x update.
+                Consumer code that works on 1.0.0 will keep working on 1.99.9.
+              </p>
+            </Section>
+
+            {/* Credits ---------------------------------------------- */}
             <Section id="credits" title="Credits">
               <ul className="space-y-2">
                 <li>
@@ -384,8 +1322,8 @@ solar:home-2-bold-duotone   → Bold Duotone`}
                     height={12}
                     className="inline text-red-500 -mt-0.5"
                   />{" "}
-                  by <span className="text-foreground">sovankentech</span> ·
-                  for the Flutter community
+                  by <span className="text-foreground">sovankentech</span> · for
+                  the Flutter community
                 </div>
                 <div>
                   <Link href="/" className="hover:text-foreground">
@@ -401,7 +1339,9 @@ solar:home-2-bold-duotone   → Bold Duotone`}
   );
 }
 
-/* ----- helpers ---------------------------------------------------------- */
+/* ---------------------------------------------------------------------- */
+/* Helpers                                                                 */
+/* ---------------------------------------------------------------------- */
 
 function cn(...classes: (string | false | undefined)[]) {
   return classes.filter(Boolean).join(" ");
@@ -567,43 +1507,88 @@ function ParamRow({ name, type, def }: { name: string; type: string; def: string
   );
 }
 
+function NamingRow({
+  input,
+  out,
+  rule,
+}: {
+  input: string;
+  out: string;
+  rule: string;
+}) {
+  return (
+    <tr className="border-b border-border/40">
+      <td className="py-2 pr-4 font-mono text-[12px] text-foreground">{input}</td>
+      <td className="py-2 pr-4 font-mono text-[12px] text-foreground">{out}</td>
+      <td className="py-2 text-[12px]">{rule}</td>
+    </tr>
+  );
+}
+
+function Callout({
+  icon,
+  tone,
+  children,
+}: {
+  icon: string;
+  tone: "info" | "tip" | "warn";
+  children: React.ReactNode;
+}) {
+  const toneClass = {
+    info: "border-blue-500/20 bg-blue-500/5 text-blue-500",
+    tip: "border-orange-500/20 bg-orange-500/5 text-orange-500",
+    warn: "border-red-500/20 bg-red-500/5 text-red-500",
+  }[tone];
+  return (
+    <div
+      className={cn(
+        "rounded-xl border p-4 text-sm text-foreground/90 my-2 flex items-start gap-2.5",
+        toneClass,
+      )}
+    >
+      <Icon icon={icon} width={18} height={18} className="shrink-0 mt-0.5" />
+      <div className="flex-1">{children}</div>
+    </div>
+  );
+}
+
 function StylesTable() {
   const styles = [
     {
       id: "linear",
       label: "Linear",
       dart: "SolarIconStyle.linear",
-      desc: "Thin 1.5 px hairline stroke — default, works everywhere.",
+      desc: "Thin 1.5 px hairline stroke — default, works everywhere. Use for chrome, tab bars, form field decorations.",
     },
     {
       id: "outline",
       label: "Outline",
       dart: "SolarIconStyle.outline",
-      desc: "Filled shape with evenodd cutouts (macOS-style outline).",
+      desc: "Filled shape with evenodd cutouts. Slightly heavier than Linear at the same size.",
     },
     {
       id: "broken",
       label: "Broken",
       dart: "SolarIconStyle.broken",
-      desc: "1.5 px stroke with intentional gaps — friendly and casual.",
+      desc: "1.5 px stroke with intentional gaps. Playful, friendly — great for empty states and illustrations.",
     },
     {
       id: "bold",
       label: "Bold",
       dart: "SolarIconStyle.bold",
-      desc: "Fully filled solid shape — high contrast, strong presence.",
+      desc: "Fully filled solid shape. High contrast, strong presence. Use for active/selected states.",
     },
     {
       id: "line-duotone",
       label: "Line Duo",
       dart: "SolarIconStyle.lineDuotone",
-      desc: "Linear stroke plus a 50 % opacity accent layer.",
+      desc: "Linear stroke plus a 50% opacity accent layer. Adds depth without going fully solid.",
     },
     {
       id: "bold-duotone",
       label: "Bold Duo",
       dart: "SolarIconStyle.boldDuotone",
-      desc: "Bold fill plus a 50 % opacity accent — the richest style.",
+      desc: "Bold fill plus a 50% opacity accent. Feels illustrative — use for hero areas and onboarding.",
     },
   ];
   return (
@@ -633,5 +1618,162 @@ function StylesTable() {
         </div>
       ))}
     </div>
+  );
+}
+
+/// A visual + code pair for one custom effect. Left half is a rendered
+/// approximation of the effect (via CSS since we're on the web); right half
+/// is the exact Flutter code that produces the effect in a real app.
+function EffectDemo({
+  id,
+  title,
+  description,
+  preview,
+  code,
+}: {
+  id: string;
+  title: string;
+  description: string;
+  preview: React.ReactNode;
+  code: string;
+}) {
+  return (
+    <div
+      id={id}
+      className="scroll-mt-24 rounded-2xl border border-border/60 bg-card overflow-hidden mt-6"
+    >
+      <div className="grid grid-cols-1 sm:grid-cols-[220px_1fr]">
+        {/* Preview */}
+        <div className="grid place-items-center bg-gradient-to-br from-muted/30 to-muted/60 p-8 min-h-[180px] border-b sm:border-b-0 sm:border-r border-border/60">
+          {preview}
+        </div>
+        {/* Details */}
+        <div className="p-4 sm:p-5 space-y-3">
+          <div>
+            <h3 className="text-base font-semibold">
+              <a
+                href={`#${id}`}
+                className="group inline-flex items-center gap-2"
+              >
+                {title}
+                <span className="text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity text-sm">
+                  #
+                </span>
+              </a>
+            </h3>
+            <p className="mt-1 text-[13px] text-muted-foreground leading-relaxed">
+              {description}
+            </p>
+          </div>
+          <CodeBlock lang="dart" code={code} />
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/// CSS-based preview of an "icon on a colored tile" effect. Approximates
+/// what the Flutter code renders — not pixel-perfect, but visually close.
+function TilePreview({
+  background,
+  icon,
+  shadow,
+  rounded,
+  frosted,
+}: {
+  background: string;
+  icon: string;
+  shadow?: string;
+  rounded?: boolean;
+  frosted?: boolean;
+}) {
+  const style: React.CSSProperties = {
+    background,
+    boxShadow: shadow ?? undefined,
+    borderRadius: rounded ? 22 : 14,
+  };
+  return (
+    <div
+      className="relative grid h-[88px] w-[88px] place-items-center overflow-hidden"
+      style={style}
+    >
+      {frosted && (
+        <div
+          className="absolute inset-0"
+          style={{
+            background: "rgba(255,255,255,0.15)",
+            backdropFilter: "blur(10px)",
+            border: "1px solid rgba(255,255,255,0.3)",
+            borderRadius: rounded ? 22 : 14,
+          }}
+        />
+      )}
+      <Icon
+        icon={icon}
+        width={40}
+        height={40}
+        className="relative text-white"
+      />
+    </div>
+  );
+}
+
+/// CSS-based preview of a bare icon with optional glow / neon effects.
+function PlainIconPreview({
+  icon,
+  color,
+  background,
+  glow,
+  glowBlur = 20,
+  neon,
+}: {
+  icon: string;
+  color: string;
+  background?: string;
+  glow?: string;
+  glowBlur?: number;
+  neon?: string;
+}) {
+  const filters: string[] = [];
+  if (glow) filters.push(`drop-shadow(0 4px ${glowBlur}px ${glow}80)`);
+  if (neon) {
+    filters.push(`drop-shadow(0 0 6px ${neon})`);
+    filters.push(`drop-shadow(0 0 16px ${neon})`);
+    filters.push(`drop-shadow(0 0 32px ${neon})`);
+  }
+  return (
+    <div
+      className="grid h-[88px] w-[88px] place-items-center rounded-xl"
+      style={background ? { background } : undefined}
+    >
+      <Icon
+        icon={icon}
+        width={56}
+        height={56}
+        style={{
+          color,
+          filter: filters.length ? filters.join(" ") : undefined,
+        }}
+      />
+    </div>
+  );
+}
+
+function FAQ({ q, a }: { q: string; a: React.ReactNode }) {
+  return (
+    <details className="group rounded-xl border border-border/60 bg-card overflow-hidden">
+      <summary className="cursor-pointer list-none px-4 py-3 flex items-center gap-3 hover:bg-muted/40 transition-colors">
+        <Icon
+          icon="solar:alt-arrow-right-linear"
+          width={14}
+          height={14}
+          className="shrink-0 transition-transform group-open:rotate-90"
+        />
+        <span className="text-sm font-semibold flex-1">{q}</span>
+      </summary>
+      <div className="px-4 pb-4 pt-1 pl-11 text-[13.5px] text-foreground/85 leading-relaxed">
+        {a}
+      </div>
+    </details>
   );
 }

@@ -4,6 +4,7 @@ import { cn } from "@/lib/utils";
 import { useStore } from "@/lib/store";
 import { Icon } from "@iconify/react";
 import { CATEGORY_ICONS, FALLBACK_CATEGORY_ICON } from "@/lib/categories";
+import { useFavorites } from "@/lib/favorites";
 
 interface Props {
   categories: Record<string, string[]>;
@@ -13,6 +14,7 @@ interface Props {
 
 export function Sidebar({ categories, order, total }: Props) {
   const { activeCategory, setActiveCategory } = useStore();
+  const { favorites } = useFavorites();
   const hasCategories = order.length > 0;
 
   return (
@@ -28,6 +30,15 @@ export function Sidebar({ categories, order, total }: Props) {
           icon="solar:widget-5-bold-duotone"
           label="All Icons"
           count={total}
+        />
+
+        <CatButton
+          active={activeCategory === "__favorites__"}
+          onClick={() => setActiveCategory("__favorites__")}
+          icon="solar:star-bold-duotone"
+          label="Starred"
+          count={favorites.size}
+          accent="text-amber-500"
         />
 
         {order.map((cat) => (
@@ -57,12 +68,14 @@ function CatButton({
   icon,
   label,
   count,
+  accent,
 }: {
   active: boolean;
   onClick: () => void;
   icon: string;
   label: string;
   count: number;
+  accent?: string;
 }) {
   return (
     <button
@@ -75,7 +88,13 @@ function CatButton({
       )}
     >
       <div className="flex items-center gap-2.5 min-w-0">
-        <Icon icon={icon} className="h-4 w-4 shrink-0" />
+        <Icon
+          icon={icon}
+          className={cn(
+            "h-4 w-4 shrink-0",
+            accent && !active && accent,
+          )}
+        />
         <span className="truncate">{label}</span>
       </div>
       <span
