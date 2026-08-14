@@ -4,6 +4,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { useStore } from "@/lib/store";
 import { type CollectionData } from "@/lib/iconify";
 import { STYLE_MAP } from "@/lib/libraries";
+import { SIZE_PRESETS } from "@/lib/styles";
 import { fuzzyFilter } from "@/lib/search";
 import { useFavorites } from "@/lib/favorites";
 import { IconCard } from "./icon-card";
@@ -27,6 +28,8 @@ export function IconGrid({ collection }: Props) {
     setActiveCategory,
     filter,
     setFilter,
+    size,
+    setSize,
     setSelected,
   } = useStore();
   const { favorites } = useFavorites();
@@ -209,9 +212,10 @@ export function IconGrid({ collection }: Props) {
             {visible.length.toLocaleString()} icons in {styleLabel} · tap any icon to preview and export
           </p>
 
+          <div className="mt-3 sm:mt-4 flex flex-wrap items-center gap-2 sm:gap-3">
           {/* Inline search. Filters the grid in place — the store's `filter`
               is URL-synced as ?q=, so a search is shareable. */}
-          <div className="relative mt-3 sm:mt-4 max-w-md">
+          <div className="relative min-w-[220px] flex-1 max-w-md">
             <Icon
               icon="solar:magnifier-linear"
               aria-hidden="true"
@@ -256,6 +260,37 @@ export function IconGrid({ collection }: Props) {
                 /
               </kbd>
             )}
+          </div>
+
+          {/* Icon size. The store already persisted this and drove
+              --icon-size; it just had no control until now. */}
+          <div
+            role="group"
+            aria-label="Icon size"
+            className="inline-flex shrink-0 items-center gap-0.5 rounded-full border border-border/60 bg-muted/40 p-1 shadow-inner"
+          >
+            {SIZE_PRESETS.map((preset) => {
+              const active = size === preset;
+              return (
+                <button
+                  key={preset}
+                  type="button"
+                  onClick={() => setSize(preset)}
+                  aria-pressed={active}
+                  title={`${preset}px icons`}
+                  className={cn(
+                    "min-w-[34px] rounded-full px-2 py-1 text-[11px] font-medium tabular-nums",
+                    "transition-all duration-200",
+                    active
+                      ? "bg-background text-foreground shadow-sm ring-1 ring-border/80"
+                      : "text-muted-foreground hover:bg-background/60 hover:text-foreground",
+                  )}
+                >
+                  {preset}
+                </button>
+              );
+            })}
+          </div>
           </div>
         </header>
 
@@ -314,7 +349,15 @@ export function IconGrid({ collection }: Props) {
         ) : (
           <div
             ref={gridRef}
-            className="grid-fade grid gap-2 sm:gap-2.5 grid-cols-[repeat(auto-fill,minmax(84px,1fr))] sm:grid-cols-[repeat(auto-fill,minmax(110px,1fr))]"
+            className="grid-fade grid gap-2 sm:gap-2.5"
+            // Track the icon size so cards stay proportionate: at 80px a
+            // fixed 110px column clips the icon, and at 20px it leaves most
+            // of the card empty. The +62px offset keeps the default 48px
+            // size on exactly the 110px column it used before.
+            style={{
+              gridTemplateColumns:
+                "repeat(auto-fill, minmax(max(72px, calc(var(--icon-size, 48px) + 62px)), 1fr))",
+            }}
           >
             {visible.map((item, i) => (
               <IconCard

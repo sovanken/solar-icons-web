@@ -160,7 +160,7 @@ export function IconDialog() {
             used to be on DialogContent. overflow-hidden clips the inner
             scroll region without affecting the floating close button. */}
         <div className="relative flex flex-col overflow-hidden rounded-2xl bg-popover text-popover-foreground shadow-2xl ring-1 ring-foreground/10 min-h-0 flex-1">
-          <div className="border-b border-border p-4 sm:p-6 pb-3 sm:pb-4 shrink-0">
+          <div className="border-b border-border p-3 sm:p-6 pb-2.5 sm:pb-4 shrink-0">
           <div className="flex items-start justify-between gap-3">
             <div className="min-w-0 flex-1">
               <DialogTitle className="font-mono text-xs sm:text-sm truncate pr-2">
@@ -205,8 +205,8 @@ export function IconDialog() {
           </div>
         </div>
 
-        <div className="p-4 sm:p-6 overflow-y-auto flex-1 min-h-0">
-          <div className="flex flex-col-reverse sm:flex-row gap-3">
+        <div className="p-3 sm:p-6 overflow-y-auto flex-1 min-h-0 min-w-0">
+          <div className="flex flex-col-reverse sm:flex-row gap-2 sm:gap-3">
             <div className="flex flex-row sm:flex-col gap-1.5 shrink-0 overflow-x-auto sm:overflow-visible">
               {STYLES.map((s) => {
                 const active = variant === s.id;
@@ -216,7 +216,7 @@ export function IconDialog() {
                     onClick={() => setVariant(s.id)}
                     title={s.label}
                     className={cn(
-                      "grid h-11 w-11 shrink-0 place-items-center rounded-lg border transition-all",
+                      "grid h-9 w-9 sm:h-11 sm:w-11 shrink-0 place-items-center rounded-lg border transition-all",
                       active
                         ? "bg-foreground text-background border-foreground shadow-sm"
                         : "border-border text-muted-foreground hover:text-foreground hover:border-foreground/40 hover:bg-muted/40",
@@ -233,43 +233,30 @@ export function IconDialog() {
               })}
             </div>
             <div
-              className="flex-1 grid place-items-center rounded-2xl border border-border bg-muted/30 min-h-[220px] sm:min-h-[300px] relative overflow-hidden"
+              className="flex-1 grid place-items-center rounded-2xl border border-border bg-muted/30 min-h-[150px] sm:min-h-[300px] relative overflow-hidden"
               style={{
                 backgroundImage:
                   "linear-gradient(to right, color-mix(in oklab, currentColor 4%, transparent) 1px, transparent 1px), linear-gradient(to bottom, color-mix(in oklab, currentColor 4%, transparent) 1px, transparent 1px)",
                 backgroundSize: "24px 24px",
               }}
             >
-              {/* Subtle orange glow behind the icon — matches the Solar brand. */}
-              <div
-                aria-hidden="true"
-                className="absolute inset-0 grid place-items-center pointer-events-none"
-              >
-                <div
-                  className="h-40 w-40 sm:h-56 sm:w-56 rounded-full opacity-40"
-                  style={{
-                    background:
-                      "radial-gradient(circle, rgba(249,115,22,0.25) 0%, rgba(249,115,22,0) 70%)",
-                  }}
-                />
-              </div>
               <Icon
                 icon={iconName}
-                className="relative h-32 w-32 sm:h-44 sm:w-44 drop-shadow-lg"
+                className="relative h-24 w-24 sm:h-44 sm:w-44"
               />
             </div>
           </div>
 
           <UsageStrip iconName={iconName} />
 
-          <Tabs defaultValue="copy" className="mt-5">
+          <Tabs defaultValue="copy" className="mt-4 sm:mt-5">
             <TabsList className="grid w-full grid-cols-3">
               <TabsTrigger value="copy">Copy</TabsTrigger>
               <TabsTrigger value="download">Download</TabsTrigger>
               <TabsTrigger value="source">Source</TabsTrigger>
             </TabsList>
 
-            <TabsContent value="copy" className="mt-4">
+            <TabsContent value="copy" className="mt-3 sm:mt-4">
               <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
                 {COPY_OPTIONS.map((opt) => {
                   const flashing = justCopied === opt.id;
@@ -279,7 +266,7 @@ export function IconDialog() {
                       onClick={() => doCopy(opt.id)}
                       disabled={!ready}
                       className={cn(
-                        "flex flex-col items-start gap-1 rounded-xl border p-3 text-left transition-all duration-200",
+                        "flex flex-col items-start gap-1 rounded-xl border p-2.5 sm:p-3 text-left transition-all duration-200",
                         "disabled:opacity-50 disabled:cursor-not-allowed",
                         flashing
                           ? "border-green-500/70 bg-green-500/10 ring-1 ring-green-500/30"
@@ -416,13 +403,15 @@ export function IconDialog() {
 
 function UsageStrip({ iconName }: { iconName: string }) {
   return (
-    <div className="mt-4">
-      <div className="mb-2 text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
+    <div className="mt-3 sm:mt-4">
+      <div className="mb-1.5 sm:mb-2 text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
         Preview in context
       </div>
-      <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
+      {/* One scrollable row on mobile — as a 2x2 grid this was the tallest
+          block in the dialog. Reverts to a 4-up grid from sm. */}
+      <div className="flex snap-x snap-mandatory gap-2 overflow-x-auto pb-1 sm:grid sm:grid-cols-4 sm:overflow-visible sm:pb-0">
         {/* Menu item — like a dropdown option */}
-        <div className="rounded-xl border border-border bg-card p-3">
+        <div className="w-[150px] shrink-0 snap-start rounded-xl border border-border bg-card p-2.5 sm:w-auto sm:p-3">
           <div className="mb-1.5 text-[9px] font-medium uppercase tracking-wider text-muted-foreground">
             Menu
           </div>
@@ -433,7 +422,7 @@ function UsageStrip({ iconName }: { iconName: string }) {
         </div>
 
         {/* Sidebar item — active/highlighted */}
-        <div className="rounded-xl border border-border bg-card p-3">
+        <div className="w-[150px] shrink-0 snap-start rounded-xl border border-border bg-card p-2.5 sm:w-auto sm:p-3">
           <div className="mb-1.5 text-[9px] font-medium uppercase tracking-wider text-muted-foreground">
             Sidebar
           </div>
@@ -444,7 +433,7 @@ function UsageStrip({ iconName }: { iconName: string }) {
         </div>
 
         {/* Filled button */}
-        <div className="rounded-xl border border-border bg-card p-3">
+        <div className="w-[150px] shrink-0 snap-start rounded-xl border border-border bg-card p-2.5 sm:w-auto sm:p-3">
           <div className="mb-1.5 text-[9px] font-medium uppercase tracking-wider text-muted-foreground">
             Button
           </div>
@@ -455,7 +444,7 @@ function UsageStrip({ iconName }: { iconName: string }) {
         </div>
 
         {/* Icon-only toolbar tile */}
-        <div className="rounded-xl border border-border bg-card p-3">
+        <div className="w-[150px] shrink-0 snap-start rounded-xl border border-border bg-card p-2.5 sm:w-auto sm:p-3">
           <div className="mb-1.5 text-[9px] font-medium uppercase tracking-wider text-muted-foreground">
             Toolbar
           </div>
