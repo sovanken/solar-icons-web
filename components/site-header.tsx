@@ -114,7 +114,7 @@ export function SiteHeader({ total }: Props) {
               "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1",
             )}
           >
-            <Icon icon="solar:magnifer-bold-duotone" className="h-4 w-4" />
+            <Icon icon="solar:magnifier-bold-duotone" className="h-4 w-4" />
           </button>
 
           <ThemeToggle />

@@ -109,7 +109,7 @@ export default function DocsPage() {
               <p>
                 <strong>Solar Iconkit</strong> is a Flutter package that bundles
                 the entire Solar icon set by 480 Design —{" "}
-                <strong>1,231 icons across 6 native styles</strong> (7,386 SVG
+                <strong>1,247 icons across 6 native styles</strong> (7,482 SVG
                 variants total) — behind a single, type-safe{" "}
                 <code>SolarIcon</code> widget. MIT-licensed, works offline, no
                 setup beyond adding the dependency. Preview every icon on the{" "}
@@ -453,7 +453,7 @@ SolarIcon('totally-typoed-name')`}
   decoration: InputDecoration(
     prefixIcon: Padding(
       padding: const EdgeInsets.all(12),
-      child: SolarIcon(SolarIcons.magnifer, size: 18),
+      child: SolarIcon(SolarIcons.magnifier, size: 18),
     ),
     suffixIcon: IconButton(
       icon: const SolarIcon(SolarIcons.closeCircle, size: 18),
@@ -484,8 +484,8 @@ SolarIcon('totally-typoed-name')`}
       label: 'Home',
     ),
     NavigationDestination(
-      icon: SolarIcon(SolarIcons.magnifer),
-      selectedIcon: SolarIcon(SolarIcons.magnifer, style: SolarIconStyle.bold),
+      icon: SolarIcon(SolarIcons.magnifier),
+      selectedIcon: SolarIcon(SolarIcons.magnifier, style: SolarIconStyle.bold),
       label: 'Search',
     ),
     NavigationDestination(
@@ -799,7 +799,7 @@ SolarIcon(
                 preview={
                   <TilePreview
                     background="linear-gradient(135deg, #6366F1 0%, #8B5CF6 50%, #EC4899 100%)"
-                    icon="solar:magic-stick-3-bold-duotone"
+                    icon="solar:magic-wand-3-bold-duotone"
                     frosted
                     rounded
                   />
@@ -1067,7 +1067,7 @@ solar:home-2-bold-duotone   → Bold duotone`}
             <Section id="bundle-size" title="Bundle size">
               <p>
                 The full asset bundle is <strong>~6.1 MB of raw SVG bytes</strong>{" "}
-                across all six styles (7,386 individually-minified files).
+                across all six styles (7,482 individually-minified files).
                 Compressed on the pub.dev archive: about 18 MB including the
                 example app, tests, and screenshots.
               </p>
@@ -1410,7 +1410,7 @@ function Hero() {
         <div>
           <div className="text-lg font-bold">Solar Iconkit for Flutter</div>
           <div className="text-[13px] text-muted-foreground">
-            1,231 icons · 6 styles · MIT · Flutter ≥ 3.27
+            1,247 icons · 6 styles · MIT · Flutter ≥ 3.27
           </div>
         </div>
       </div>
@@ -1445,7 +1445,7 @@ function FeatureGrid() {
   const items = [
     {
       icon: "solar:widget-5-bold-duotone",
-      title: "1,231 icons",
+      title: "1,247 icons",
       body: "Curated across 37 categories from arrows to weather.",
     },
     {

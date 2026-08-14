@@ -212,7 +212,7 @@ export function IconGrid({ collection }: Props) {
             ) : (
               <>
                 <Icon
-                  icon="solar:magnifer-bug-linear"
+                  icon="solar:magnifier-bug-linear"
                   className="mb-3 h-10 w-10 text-muted-foreground/70"
                 />
                 <p className="text-sm text-muted-foreground">

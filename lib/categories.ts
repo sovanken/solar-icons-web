@@ -28,7 +28,7 @@ export const CATEGORY_ICONS: Record<string, string> = {
   "Notes": "solar:notebook-bold-duotone",
   "Notifications": "solar:bell-bold-duotone",
   "School": "solar:square-academic-cap-bold-duotone",
-  "Search": "solar:magnifer-bold-duotone",
+  "Search": "solar:magnifier-bold-duotone",
   "Security": "solar:shield-check-bold-duotone",
   "Settings, Fine Tuning": "solar:settings-bold-duotone",
   "Shopping, Ecommerce": "solar:cart-3-bold-duotone",

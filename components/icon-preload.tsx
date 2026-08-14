@@ -6,7 +6,7 @@ import { CATEGORY_ICONS } from "@/lib/categories";
 import { PREFIX, STYLES } from "@/lib/libraries";
 
 const HEADER_ICONS = [
-  "solar:magnifer-bold-duotone",
+  "solar:magnifier-bold-duotone",
   "solar:sun-bold-duotone",
   "solar:moon-bold-duotone",
   "solar:widget-5-bold-duotone",

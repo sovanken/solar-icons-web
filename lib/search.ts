@@ -1,7 +1,7 @@
 /// Small, dependency-free fuzzy search for the Solar icon catalog.
 ///
 /// Design goals:
-///   1. Fast enough for 1,231 icons filtered on every keystroke.
+///   1. Fast enough for 1,247 icons filtered on every keystroke.
 ///   2. Typo-tolerant: "srach" should still find "search".
 ///   3. Alias-aware: "car" also matches "transport", "bus", "wheel".
 ///   4. Zero dependencies (no fuse.js — the alias table plus a light

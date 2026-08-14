@@ -10,7 +10,7 @@ export default function NotFound() {
     <div className="min-h-screen grid place-items-center px-6 py-24">
       <div className="max-w-md text-center">
         <Icon
-          icon="solar:magnifer-bug-bold-duotone"
+          icon="solar:magnifier-bug-bold-duotone"
           className="mx-auto mb-4 h-16 w-16 text-muted-foreground/70"
         />
         <h1 className="text-3xl font-bold tracking-tight">Page not found</h1>
