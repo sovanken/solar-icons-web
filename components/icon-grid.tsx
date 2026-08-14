@@ -9,6 +9,7 @@ import { useFavorites } from "@/lib/favorites";
 import { IconCard } from "./icon-card";
 import { Icon } from "@iconify/react";
 import { Badge } from "@/components/ui/badge";
+import { cn } from "@/lib/utils";
 
 interface Props {
   collection: CollectionData;
@@ -20,14 +21,21 @@ interface VisibleItem {
 }
 
 export function IconGrid({ collection }: Props) {
-  const { viewStyle, activeCategory, filter, setSelected, setCommandOpen } =
-    useStore();
+  const {
+    viewStyle,
+    activeCategory,
+    setActiveCategory,
+    filter,
+    setFilter,
+    setSelected,
+  } = useStore();
   const { favorites } = useFavorites();
 
   // Grid keyboard focus. Null means no icon is focused; user must ↓/→ into
   // the grid to activate. Reset whenever the visible list changes.
   const [focusedIndex, setFocusedIndex] = useState<number | null>(null);
   const gridRef = useRef<HTMLDivElement>(null);
+  const searchRef = useRef<HTMLInputElement>(null);
 
   const activeStyle = STYLE_MAP[viewStyle];
   const suffix = activeStyle?.suffix ?? "";
@@ -108,6 +116,18 @@ export function IconGrid({ collection }: Props) {
       // Ignore modifier combos apart from ⌘K (handled elsewhere).
       if (e.altKey || e.ctrlKey || e.metaKey) return;
       if (isTypingInField(e.target)) return;
+
+      // Focus the inline search box rather than the palette — searching in
+      // place keeps the grid visible, which is what these keys imply.
+      // ⌘K still opens the palette.
+      if (e.key === "/" || e.key === "s") {
+        e.preventDefault();
+        searchRef.current?.focus();
+        searchRef.current?.select();
+        return;
+      }
+
+      // Everything below navigates the grid, so it needs something in it.
       if (visible.length === 0) return;
 
       const cols = measureColumns();
@@ -152,17 +172,12 @@ export function IconGrid({ collection }: Props) {
         case "Escape":
           setFocusedIndex(null);
           break;
-        case "/":
-        case "s":
-          e.preventDefault();
-          setCommandOpen(true);
-          break;
       }
     };
 
     window.addEventListener("keydown", handler);
     return () => window.removeEventListener("keydown", handler);
-  }, [focusedIndex, visible, setSelected, setCommandOpen]);
+  }, [focusedIndex, visible, setSelected]);
 
   // Scroll the focused card into view whenever the index changes.
   useEffect(() => {
@@ -193,6 +208,55 @@ export function IconGrid({ collection }: Props) {
           <p className="mt-1.5 text-xs sm:text-sm text-muted-foreground">
             {visible.length.toLocaleString()} icons in {styleLabel} · tap any icon to preview and export
           </p>
+
+          {/* Inline search. Filters the grid in place — the store's `filter`
+              is URL-synced as ?q=, so a search is shareable. */}
+          <div className="relative mt-3 sm:mt-4 max-w-md">
+            <Icon
+              icon="solar:magnifier-linear"
+              aria-hidden="true"
+              className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground"
+            />
+            <input
+              ref={searchRef}
+              type="search"
+              value={filter}
+              onChange={(e) => setFilter(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === "Escape") {
+                  e.preventDefault();
+                  if (filter) setFilter("");
+                  else e.currentTarget.blur();
+                }
+              }}
+              placeholder="Search icons — try “arrow right” or “delete”"
+              aria-label="Search icons by name"
+              className={cn(
+                "h-10 w-full rounded-lg border border-border bg-background",
+                "pl-9 pr-20 text-sm",
+                "placeholder:text-muted-foreground/70",
+                "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1",
+                "[&::-webkit-search-cancel-button]:appearance-none",
+              )}
+            />
+            {filter ? (
+              <button
+                type="button"
+                onClick={() => {
+                  setFilter("");
+                  searchRef.current?.focus();
+                }}
+                aria-label="Clear search"
+                className="absolute right-2 top-1/2 -translate-y-1/2 rounded-md px-2 py-1 text-xs text-muted-foreground hover:bg-muted hover:text-foreground"
+              >
+                Clear
+              </button>
+            ) : (
+              <kbd className="pointer-events-none absolute right-3 top-1/2 hidden -translate-y-1/2 rounded border border-border bg-muted px-1.5 py-0.5 text-[10px] font-medium text-muted-foreground sm:block">
+                /
+              </kbd>
+            )}
+          </div>
         </header>
 
         {visible.length === 0 ? (
@@ -215,9 +279,35 @@ export function IconGrid({ collection }: Props) {
                   icon="solar:magnifier-bug-linear"
                   className="mb-3 h-10 w-10 text-muted-foreground/70"
                 />
-                <p className="text-sm text-muted-foreground">
-                  No icons match your search.
+                <p className="text-sm font-medium">
+                  No icons match “{filter}”.
                 </p>
+                <p className="mt-1 max-w-sm text-xs text-muted-foreground">
+                  {activeCategory === "__all__"
+                    ? "Try a shorter or more general word — search understands common synonyms, so “delete”, “save” and “wifi” all work."
+                    : `Nothing in ${title} matches. It may exist in another category.`}
+                </p>
+                <div className="mt-4 flex items-center gap-2">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setFilter("");
+                      searchRef.current?.focus();
+                    }}
+                    className="rounded-md border border-border px-3 py-1.5 text-xs font-medium hover:bg-muted"
+                  >
+                    Clear search
+                  </button>
+                  {activeCategory !== "__all__" && (
+                    <button
+                      type="button"
+                      onClick={() => setActiveCategory("__all__")}
+                      className="rounded-md border border-border px-3 py-1.5 text-xs font-medium hover:bg-muted"
+                    >
+                      Search all icons
+                    </button>
+                  )}
+                </div>
               </>
             )}
           </div>

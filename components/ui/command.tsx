@@ -39,12 +39,16 @@ function CommandDialog({
   children,
   className,
   showCloseButton = false,
+  commandProps,
   ...props
 }: Omit<React.ComponentProps<typeof Dialog>, "children"> & {
   title?: string
   description?: string
   className?: string
   showCloseButton?: boolean
+  /// Forwarded to the inner cmdk root — set `shouldFilter: false` to rank
+  /// results yourself instead of using cmdk's built-in matcher.
+  commandProps?: Omit<React.ComponentProps<typeof Command>, "children">
   children: React.ReactNode
 }) {
   return (
@@ -60,7 +64,7 @@ function CommandDialog({
         )}
         showCloseButton={showCloseButton}
       >
-        <Command>{children}</Command>
+        <Command {...commandProps}>{children}</Command>
       </DialogContent>
     </Dialog>
   )

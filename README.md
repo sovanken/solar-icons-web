@@ -20,7 +20,11 @@ Companion to the [`solar_iconkit`](https://pub.dev/packages/solar_iconkit) Flutt
 
 - **1,247 icons · 6 native styles** — linear, outline, broken, bold, line-duotone, bold-duotone. Every style shown live in the top bar as a segmented chip control.
 - **37 categories** with hand-picked bold-duotone leading icons in the sidebar (mobile: a slide-in drawer).
-- **⌘K / Ctrl+K command palette** — keyboard-first search across every icon and category.
+- **Search that reads like a person types it** — an always-visible box filters the grid in place (press `/` to focus it from anywhere), plus a **⌘K / Ctrl+K palette** over the whole catalog. Both share one ranker:
+  - multi-word: `arrow right` finds `arrow-right`
+  - synonym-aware: `search` → `magnifier`, `delete` → `trash-bin`, `save` → `diskette`, `wifi` → `wi-fi`
+  - typo-tolerant, including swapped letters: `magnifer` and `arrow rihgt` still land
+  - a search is shareable — the query syncs to `?q=` in the URL
 - **Icon detail dialog** — large hero preview on a grid, per-style preview column, and:
   - **Copy**: SVG, Flutter widget (short), Flutter widget (full API), Iconify tag, icon name
   - **Download**: SVG, PNG (multiple sizes), JPG, WebP, and a ZIP bundle
