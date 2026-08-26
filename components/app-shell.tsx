@@ -36,7 +36,11 @@ export function AppShell() {
     <div className="flex h-screen flex-col overflow-hidden">
       <UrlSync />
       <AnnouncementBanner />
-      <SiteHeader total={total} />
+      <SiteHeader
+        total={total}
+        categories={collection?.categories ?? {}}
+        order={collection?.order ?? []}
+      />
       <div className="flex flex-1 min-h-0 overflow-hidden">
         {error ? (
           <div className="flex-1 grid place-items-center py-24">

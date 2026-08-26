@@ -70,7 +70,8 @@ export function MobileNav({ categories, order, total }: Props) {
         aria-label="Browse categories"
         title="Categories"
         className={cn(
-          "inline-flex h-9 w-9 items-center justify-center rounded-md",
+          // Mobile only — the desktop sidebar covers this above md.
+          "md:hidden inline-flex h-9 w-9 items-center justify-center rounded-md",
           "border border-border bg-background text-foreground",
           "hover:bg-muted transition-colors",
           "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1",

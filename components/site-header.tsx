@@ -4,6 +4,7 @@ import Link from "next/link";
 import { Icon } from "@iconify/react";
 import { ThemeToggle } from "./theme-toggle";
 import { StyleDrawer } from "./style-drawer";
+import { MobileNav } from "./mobile-nav";
 import { useStore } from "@/lib/store";
 import { STYLES, PREFIX } from "@/lib/libraries";
 import { cn } from "@/lib/utils";
@@ -11,11 +12,13 @@ import { useEffect } from "react";
 
 interface Props {
   total: number;
+  categories: Record<string, string[]>;
+  order: string[];
 }
 
 const SAMPLE_ICON = "home-2";
 
-export function SiteHeader({ total }: Props) {
+export function SiteHeader({ total, categories, order }: Props) {
   const { setCommandOpen, viewStyle, setViewStyle } = useStore();
 
   useEffect(() => {
@@ -32,7 +35,11 @@ export function SiteHeader({ total }: Props) {
   return (
     <header className="shrink-0 border-b border-border/60 bg-background/70 backdrop-blur-xl z-30">
       <div className="mx-auto flex max-w-[1600px] items-center gap-2 sm:gap-3 px-3 sm:px-6 py-3">
-        {/* Mobile: leading style drawer button --------------------------- */}
+        {/* Mobile: leading category + style drawers ---------------------- */}
+        {/* MobileNav was written but never mounted, so below md there was no
+            category control at all: a phone landing on ?category=Devices saw
+            its 91 icons with no way back to All Icons. */}
+        <MobileNav categories={categories} order={order} total={total} />
         <StyleDrawer />
 
         {/* Left spacer — pushes brand toward center on mobile ------------ */}
