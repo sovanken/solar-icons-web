@@ -5,6 +5,7 @@ import { useStore } from "@/lib/store";
 import { Icon } from "@iconify/react";
 import { CATEGORY_ICONS, FALLBACK_CATEGORY_ICON } from "@/lib/categories";
 import { useFavorites } from "@/lib/favorites";
+import { NEW_ICON_NAMES } from "@/lib/whats-new";
 
 interface Props {
   categories: Record<string, string[]>;
@@ -30,6 +31,15 @@ export function Sidebar({ categories, order, total }: Props) {
           icon="solar:widget-5-bold-duotone"
           label="All Icons"
           count={total}
+        />
+
+        <CatButton
+          active={activeCategory === "__new__"}
+          onClick={() => setActiveCategory("__new__")}
+          icon="solar:stars-bold-duotone"
+          label="New"
+          count={NEW_ICON_NAMES.length}
+          accent="text-emerald-500"
         />
 
         <CatButton

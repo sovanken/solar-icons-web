@@ -5,6 +5,7 @@ import { useStore } from "@/lib/store";
 import { type CollectionData } from "@/lib/iconify";
 import { STYLE_MAP } from "@/lib/libraries";
 import { SIZE_PRESETS } from "@/lib/styles";
+import { NEW_ICON_NAMES } from "@/lib/whats-new";
 import { fuzzyFilter } from "@/lib/search";
 import { useFavorites } from "@/lib/favorites";
 import { IconCard } from "./icon-card";
@@ -51,6 +52,18 @@ export function IconGrid({ collection }: Props) {
       all = order.flatMap((c) =>
         categories[c].map((b) => ({ base: b, category: c })),
       );
+    } else if (activeCategory === "__new__") {
+      // Recently added icons, newest release first. Names are filtered
+      // against the live catalog so a stale entry drops out rather than
+      // rendering a broken tile.
+      const catByBase = new Map<string, string>();
+      for (const cat of order) {
+        for (const base of categories[cat]) catByBase.set(base, cat);
+      }
+      all = NEW_ICON_NAMES.filter((b) => catByBase.has(b)).map((base) => ({
+        base,
+        category: catByBase.get(base)!,
+      }));
     } else if (activeCategory === "__favorites__") {
       // Locate each favorite's original category so the dialog shows the
       // right context badge; fall back to "Starred" if a favorite's
@@ -75,9 +88,11 @@ export function IconGrid({ collection }: Props) {
   const title =
     activeCategory === "__all__"
       ? "All Icons"
-      : activeCategory === "__favorites__"
-        ? "Starred"
-        : activeCategory;
+      : activeCategory === "__new__"
+        ? "New"
+        : activeCategory === "__favorites__"
+          ? "Starred"
+          : activeCategory;
 
   // Reset focus when the visible list changes (filter/category/style).
   useEffect(() => {

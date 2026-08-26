@@ -4,6 +4,7 @@ import { useState } from "react";
 import { Icon } from "@iconify/react";
 import { cn } from "@/lib/utils";
 import { useStore } from "@/lib/store";
+import { NEW_ICON_NAMES } from "@/lib/whats-new";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 
 interface Props {
@@ -86,6 +87,13 @@ export function MobileNav({ categories, order, total }: Props) {
             icon="solar:widget-5-bold-duotone"
             label="All Icons"
             count={total}
+          />
+          <MobileItem
+            active={activeCategory === "__new__"}
+            onClick={() => pick("__new__")}
+            icon="solar:stars-bold-duotone"
+            label="New"
+            count={NEW_ICON_NAMES.length}
           />
           {order.map((cat) => (
             <MobileItem

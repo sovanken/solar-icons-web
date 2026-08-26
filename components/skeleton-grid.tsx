@@ -29,7 +29,7 @@ export function SkeletonGrid({ count = 60 }: Props) {
             <div
               key={i}
               className="flex flex-col items-center justify-center gap-3 rounded-xl border border-border/60 bg-card p-3.5"
-              style={{ minHeight: "calc(var(--icon-size, 48px) + 60px)" }}
+              style={{ minHeight: "calc(var(--icon-size, 48px) + 72px)" }}
             >
               <div className="skeleton h-10 w-10 rounded-lg" />
               <div className="skeleton h-2 w-14 rounded" />

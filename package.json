@@ -3,15 +3,15 @@
   "version": "0.1.0",
   "private": true,
   "description": "Interactive browser for the Solar icon set. Companion to the solar_iconkit Flutter package.",
-  "author": "sovankentech",
+  "author": "sovanken",
   "license": "MIT",
-  "homepage": "https://github.com/sovankentech/solar-icons-web#readme",
+  "homepage": "https://github.com/sovanken/solar-icons-web#readme",
   "repository": {
     "type": "git",
-    "url": "https://github.com/sovankentech/solar-icons-web.git"
+    "url": "https://github.com/sovanken/solar-icons-web.git"
   },
   "bugs": {
-    "url": "https://github.com/sovankentech/solar-icons-web/issues"
+    "url": "https://github.com/sovanken/solar-icons-web/issues"
   },
   "scripts": {
     "dev": "next dev",

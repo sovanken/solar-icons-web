@@ -31,7 +31,7 @@ export function AnnouncementBanner() {
         />
         <div className="min-w-0 flex-1 text-[12px] leading-tight sm:text-[13px]">
           <span className="font-semibold">solar_iconkit is on pub.dev</span> —
-          1,247 Flutter icons across 6 native styles, one type-safe widget.{" "}
+          1,269 Flutter icons across 6 native styles, one type-safe widget.{" "}
           <a
             href="https://pub.dev/packages/solar_iconkit"
             target="_blank"

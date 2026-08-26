@@ -109,7 +109,7 @@ export default function DocsPage() {
               <p>
                 <strong>Solar Iconkit</strong> is a Flutter package that bundles
                 the entire Solar icon set by 480 Design —{" "}
-                <strong>1,247 icons across 6 native styles</strong> (7,482 SVG
+                <strong>1,269 icons across 6 native styles</strong> (7,614 SVG
                 variants total) — behind a single, type-safe{" "}
                 <code>SolarIcon</code> widget. MIT-licensed, works offline, no
                 setup beyond adding the dependency. Preview every icon on the{" "}
@@ -1067,7 +1067,7 @@ solar:home-2-bold-duotone   → Bold duotone`}
             <Section id="bundle-size" title="Bundle size">
               <p>
                 The full asset bundle is <strong>~6.1 MB of raw SVG bytes</strong>{" "}
-                across all six styles (7,482 individually-minified files).
+                across all six styles (7,614 individually-minified files).
                 Compressed on the pub.dev archive: about 18 MB including the
                 example app, tests, and screenshots.
               </p>
@@ -1103,7 +1103,7 @@ solar:home-2-bold-duotone   → Bold duotone`}
                 <code>SolarIcons.xxx</code> references and emits an asset
                 subset) is planned for <code>v2.0</code>. Track progress at{" "}
                 <a
-                  href="https://github.com/sovankentech/solar_iconkit/issues"
+                  href="https://github.com/sovanken/solar_iconkit/issues"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="text-primary underline underline-offset-2"
@@ -1322,7 +1322,7 @@ void main() {
                     height={12}
                     className="inline text-red-500 -mt-0.5"
                   />{" "}
-                  by <span className="text-foreground">sovankentech</span> · for
+                  by <span className="text-foreground">sovanken</span> · for
                   the Flutter community
                 </div>
                 <div>
@@ -1410,7 +1410,7 @@ function Hero() {
         <div>
           <div className="text-lg font-bold">Solar Iconkit for Flutter</div>
           <div className="text-[13px] text-muted-foreground">
-            1,247 icons · 6 styles · MIT · Flutter ≥ 3.27
+            1,269 icons · 6 styles · MIT · Flutter ≥ 3.27
           </div>
         </div>
       </div>
@@ -1445,7 +1445,7 @@ function FeatureGrid() {
   const items = [
     {
       icon: "solar:widget-5-bold-duotone",
-      title: "1,247 icons",
+      title: "1,269 icons",
       body: "Curated across 37 categories from arrows to weather.",
     },
     {

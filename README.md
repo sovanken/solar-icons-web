@@ -6,7 +6,7 @@
 [![Tailwind CSS](https://img.shields.io/badge/Tailwind-4-38BDF8?logo=tailwindcss&logoColor=white)](https://tailwindcss.com)
 [![Support](https://img.shields.io/badge/Support-Ko--fi-FF5E5B?logo=ko-fi&logoColor=white)](https://ko-fi.com/sovanken)
 
-An interactive icon browser for the [Solar icon set](https://solar-icons-web.vercel.app) — **1,247 icons across 6 native styles**. Preview any icon at any size, switch styles instantly, and copy the exact Flutter widget code you need.
+An interactive icon browser for the [Solar icon set](https://solar-icons-web.vercel.app) — **1,269 icons across 6 native styles**. Preview any icon at any size, switch styles instantly, and copy the exact Flutter widget code you need.
 
 Companion to the [`solar_iconkit`](https://pub.dev/packages/solar_iconkit) Flutter package on pub.dev.
 
@@ -18,7 +18,7 @@ Companion to the [`solar_iconkit`](https://pub.dev/packages/solar_iconkit) Flutt
 
 ## Highlights
 
-- **1,247 icons · 6 native styles** — linear, outline, broken, bold, line-duotone, bold-duotone. Every style shown live in the top bar as a segmented chip control.
+- **1,269 icons · 6 native styles** — linear, outline, broken, bold, line-duotone, bold-duotone. Every style shown live in the top bar as a segmented chip control.
 - **37 categories** with hand-picked bold-duotone leading icons in the sidebar (mobile: a slide-in drawer).
 - **Search that reads like a person types it** — an always-visible box filters the grid in place (press `/` to focus it from anywhere), plus a **⌘K / Ctrl+K palette** over the whole catalog. Both share one ranker:
   - multi-word: `arrow right` finds `arrow-right`
@@ -60,7 +60,7 @@ Icon data is fetched from the public [Iconify API](https://api.iconify.design). 
 Requires **Node.js 20+** (Next.js 16 baseline).
 
 ```bash
-git clone https://github.com/sovankentech/solar-icons-web.git
+git clone https://github.com/sovanken/solar-icons-web.git
 cd solar-icons-web
 npm install
 npm run dev
@@ -99,7 +99,7 @@ This is a standard Next.js 16 App Router project. The production deployment live
 ### Deploy to Vercel
 
 ```
-1. Import github.com/sovankentech/solar-icons-web on vercel.com/new
+1. Import github.com/sovanken/solar-icons-web on vercel.com/new
 2. Framework preset: Next.js (auto-detected)
 3. Build command: next build
 4. Output directory: .next
@@ -195,4 +195,4 @@ If you're using Solar Iconkit in a project and want to say thanks, [buy me a cof
 
 ## License
 
-MIT © sovankentech. The Solar icon set is © 480 Design, redistributed via the Iconify API under the MIT License.
+MIT © sovanken. The Solar icon set is © 480 Design, redistributed via the Iconify API under the MIT License.

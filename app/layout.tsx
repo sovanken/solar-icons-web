@@ -34,11 +34,11 @@ export const viewport: Viewport = {
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   title: {
-    default: "Solar Iconkit — 1,247 Flutter icons in 6 native styles",
+    default: "Solar Iconkit — 1,269 Flutter icons in 6 native styles",
     template: "%s · Solar Iconkit",
   },
   description:
-    "Interactive browser for the Solar icon set. 1,247 icons across 6 native styles (linear, outline, broken, bold, line-duotone, bold-duotone). Preview any icon, copy Flutter widget code, or download as SVG, PNG, JPG, WebP. Companion to the solar_iconkit Flutter package on pub.dev.",
+    "Interactive browser for the Solar icon set. 1,269 icons across 6 native styles (linear, outline, broken, bold, line-duotone, bold-duotone). Preview any icon, copy Flutter widget code, or download as SVG, PNG, JPG, WebP. Companion to the solar_iconkit Flutter package on pub.dev.",
   keywords: [
     "solar iconkit",
     "solar icons",
@@ -56,9 +56,9 @@ export const metadata: Metadata = {
     "open source icons",
     "free icons",
   ],
-  authors: [{ name: "sovankentech", url: "https://pub.dev/publishers" }],
-  creator: "sovankentech",
-  publisher: "sovankentech",
+  authors: [{ name: "sovanken", url: "https://pub.dev/publishers" }],
+  creator: "sovanken",
+  publisher: "sovanken",
   applicationName: "Solar Iconkit",
   category: "developer tools",
   formatDetection: {
@@ -70,17 +70,17 @@ export const metadata: Metadata = {
     type: "website",
     url: SITE_URL,
     siteName: "Solar Iconkit",
-    title: "Solar Iconkit — 1,247 Flutter icons in 6 native styles",
+    title: "Solar Iconkit — 1,269 Flutter icons in 6 native styles",
     description:
-      "1,247 Solar icons across 6 native styles. Copy Flutter widget code, download as SVG, PNG, JPG, WebP. MIT-licensed, works offline.",
+      "1,269 Solar icons across 6 native styles. Copy Flutter widget code, download as SVG, PNG, JPG, WebP. MIT-licensed, works offline.",
     locale: "en_US",
   },
   twitter: {
     card: "summary_large_image",
     title: "Solar Iconkit — Flutter icon library",
     description:
-      "1,247 icons across 6 native styles, behind a single type-safe SolarIcon widget. On pub.dev now.",
-    creator: "@sovankentech",
+      "1,269 icons across 6 native styles, behind a single type-safe SolarIcon widget. On pub.dev now.",
+    creator: "@sovanken",
   },
   robots: {
     index: true,

@@ -30,9 +30,9 @@ export function IconCard({ base, category, suffix, onClick, focused }: Props) {
           : "border-border/60",
       )}
       style={{
-        minHeight: "calc(var(--icon-size, 48px) + 60px)",
+        minHeight: "calc(var(--icon-size, 48px) + 72px)",
         contentVisibility: "auto",
-        containIntrinsicSize: "auto calc(var(--icon-size, 48px) + 60px)",
+        containIntrinsicSize: "auto calc(var(--icon-size, 48px) + 72px)",
       }}
       title={base}
     >
@@ -47,7 +47,10 @@ export function IconCard({ base, category, suffix, onClick, focused }: Props) {
           style={{ fontSize: "var(--icon-size, 48px)", width: "1em", height: "1em" }}
         />
       </div>
-      <span className="relative z-10 max-w-full truncate font-mono text-[10px] text-muted-foreground">
+      {/* Two lines, wrapping anywhere: Solar names share long prefixes, so a
+          single truncated line renders four different icons identically
+          (e.g. "double-alt-ar…"). */}
+      <span className="relative z-10 line-clamp-2 w-full text-center font-mono text-[10px] leading-tight text-muted-foreground [overflow-wrap:anywhere]">
         {base}
       </span>
     </button>
