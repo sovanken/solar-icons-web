@@ -5,6 +5,7 @@ import { Icon } from "@iconify/react";
 import { cn } from "@/lib/utils";
 import { useStore } from "@/lib/store";
 import { NEW_ICON_NAMES } from "@/lib/whats-new";
+import { useFavorites } from "@/lib/favorites";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 
 interface Props {
@@ -55,6 +56,7 @@ const CATEGORY_ICON: Record<string, string> = {
 
 export function MobileNav({ categories, order, total }: Props) {
   const { activeCategory, setActiveCategory } = useStore();
+  const { favorites } = useFavorites();
   const [open, setOpen] = useState(false);
 
   const pick = (cat: string) => {
@@ -95,6 +97,18 @@ export function MobileNav({ categories, order, total }: Props) {
             label="New"
             count={NEW_ICON_NAMES.length}
           />
+          {/* Starred was reachable only from the desktop sidebar, so phone
+              users could star icons and never get back to them. */}
+          <MobileItem
+            active={activeCategory === "__favorites__"}
+            onClick={() => pick("__favorites__")}
+            icon="solar:star-bold-duotone"
+            label="Starred"
+            count={favorites.size}
+          />
+
+          <div className="mx-1 my-2 h-px bg-border/60" role="presentation" />
+
           {order.map((cat) => (
             <MobileItem
               key={cat}
