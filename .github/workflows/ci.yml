@@ -1,0 +1,42 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  build:
+    name: Build & checks (Node 20)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      # Node 20 is the stated baseline in the README (Next.js 16 requires 20+).
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      # Catches components that are written but never rendered. This repo has
+      # shipped three of those; a build cannot catch them, because dead code
+      # compiles perfectly well.
+      - name: Check for unmounted components
+        run: npm run check:unmounted
+
+      # The production build type-checks the whole project, which is the real
+      # regression gate here.
+      - name: Build
+        run: npm run build
+
+      # Not blocking yet: eslint reports 7 pre-existing react-hooks
+      # violations (set-state-in-effect) that predate this workflow. A gate
+      # that is red on day one gets ignored, so this reports without failing.
+      # Once those are fixed, drop continue-on-error to make it enforcing.
+      - name: Lint (informational)
+        run: npm run lint
+        continue-on-error: true

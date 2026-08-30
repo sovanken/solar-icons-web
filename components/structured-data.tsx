@@ -16,7 +16,7 @@ export function StructuredData() {
       "A Flutter package that bundles the entire Solar icon set — 1,269 icons across 6 native styles behind a single type-safe SolarIcon widget. MIT-licensed, works offline.",
     url: SITE_URL,
     downloadUrl: "https://pub.dev/packages/solar_iconkit",
-    softwareVersion: "1.1.0",
+    softwareVersion: "1.2.0",
     author: {
       "@type": "Person",
       name: "sovanken",
