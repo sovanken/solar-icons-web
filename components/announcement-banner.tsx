@@ -1,25 +1,32 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Icon } from "@iconify/react";
+import { useIsHydrated, writePersisted } from "@/lib/persisted";
 
 // Bumped whenever the announcement copy changes so dismissed users see the
 // next milestone. Local storage stores the last-dismissed banner key.
 const BANNER_KEY = "solar-iconkit-banner-v1";
 
 export function AnnouncementBanner() {
-  const [dismissed, setDismissed] = useState<boolean | null>(null);
+  // Dismissal lives in localStorage, which is unreadable during SSR, so the
+  // banner stays hidden until hydration rather than flashing in and out.
+  const hydrated = useIsHydrated();
+  const [dismissedNow, setDismissedNow] = useState(false);
 
-  useEffect(() => {
-    setDismissed(localStorage.getItem(BANNER_KEY) === "1");
-  }, []);
+  if (!hydrated) return null;
 
-  // Wait until we know the dismissal state to avoid a flash of the banner.
-  if (dismissed === null || dismissed) return null;
+  let stored = false;
+  try {
+    stored = window.localStorage.getItem(BANNER_KEY) === "1";
+  } catch {
+    stored = false;
+  }
+  if (dismissedNow || stored) return null;
 
   const onDismiss = () => {
-    localStorage.setItem(BANNER_KEY, "1");
-    setDismissed(true);
+    writePersisted(BANNER_KEY, "1");
+    setDismissedNow(true);
   };
 
   return (

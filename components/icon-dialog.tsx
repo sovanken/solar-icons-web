@@ -36,17 +36,21 @@ export function IconDialog() {
   const { toggle: toggleFavorite, isFavorite } = useFavorites();
   const onClose = () => setSelected(null);
   const [variant, setVariant] = useState<string>(viewStyle);
-  const [svgSource, setSvgSource] = useState<string>("");
-  const [loading, setLoading] = useState(false);
+  // Keyed by icon + global style: opening a different icon, or changing the
+  // global style while open, snaps the preview back to that style.
+  const resetKey = `${selected?.base ?? ""}|${viewStyle}`;
+  const [prevResetKey, setPrevResetKey] = useState(resetKey);
+  if (resetKey !== prevResetKey) {
+    setPrevResetKey(resetKey);
+    setVariant(viewStyle);
+  }
+  // The fetched SVG is stored with the name it belongs to, so "still
+  // loading" is derived by comparison instead of tracked as its own flag.
+  const [loaded, setLoaded] = useState<{ name: string; svg: string } | null>(null);
   const [downloading, setDownloading] = useState<string | null>(null);
   // Which copy button just fired — used for the green-flash micro-interaction.
   // Cleared after 1.4s so the checkmark returns to the normal icon.
   const [justCopied, setJustCopied] = useState<CopyKind | null>(null);
-
-  useEffect(() => {
-    if (!selected) return;
-    setVariant(viewStyle);
-  }, [selected, viewStyle]);
 
   const activeStyle = STYLE_MAP[variant];
   const suffix = activeStyle?.suffix ?? "";
@@ -56,21 +60,21 @@ export function IconDialog() {
   useEffect(() => {
     if (!selected || !activeStyle) return;
     let cancelled = false;
-    setLoading(true);
     fetchIconSvg(iconName)
       .then((text) => {
-        if (!cancelled) setSvgSource(text);
+        if (!cancelled) setLoaded({ name: iconName, svg: text });
       })
       .catch(() => {
-        if (!cancelled) setSvgSource("");
-      })
-      .finally(() => {
-        if (!cancelled) setLoading(false);
+        if (!cancelled) setLoaded({ name: iconName, svg: "" });
       });
     return () => {
       cancelled = true;
     };
   }, [selected, iconName, activeStyle]);
+
+  // Empty until the fetch for *this* name lands, so switching style or icon
+  // cannot briefly show the previous icon's source.
+  const svgSource = loaded?.name === iconName ? loaded.svg : "";
 
   const copyPayloads = useMemo<Record<CopyKind, string>>(() => {
     if (!svgSource || !selected) return {} as Record<CopyKind, string>;
@@ -145,7 +149,7 @@ export function IconDialog() {
       toast.success("Downloaded ZIP with SVG + all PNG sizes");
     });
 
-  const ready = !!svgSource && !loading;
+  const ready = svgSource !== "";
 
   return (
     <Dialog open={!!selected} onOpenChange={(o) => !o && onClose()}>
@@ -364,7 +368,7 @@ export function IconDialog() {
 
             <TabsContent value="source" className="mt-4">
               <pre className="max-h-64 overflow-auto rounded-xl border border-border bg-muted/40 p-4 font-mono text-[11px] leading-relaxed text-muted-foreground whitespace-pre-wrap break-all">
-                {loading ? "Loading…" : svgSource || "—"}
+                {ready ? svgSource : "Loading…"}
               </pre>
               {ready && (
                 <div className="mt-2 flex items-center gap-2 text-[11px] text-muted-foreground">

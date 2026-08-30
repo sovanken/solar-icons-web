@@ -33,10 +33,5 @@ jobs:
       - name: Build
         run: npm run build
 
-      # Not blocking yet: eslint reports 7 pre-existing react-hooks
-      # violations (set-state-in-effect) that predate this workflow. A gate
-      # that is red on day one gets ignored, so this reports without failing.
-      # Once those are fixed, drop continue-on-error to make it enforcing.
-      - name: Lint (informational)
+      - name: Lint
         run: npm run lint
-        continue-on-error: true

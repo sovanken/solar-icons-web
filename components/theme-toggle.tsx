@@ -2,8 +2,8 @@
 
 import { useTheme } from "next-themes";
 import { Icon } from "@iconify/react";
-import { useEffect, useState } from "react";
 import { cn } from "@/lib/utils";
+import { useIsHydrated } from "@/lib/persisted";
 
 const btnClasses = cn(
   "inline-flex h-9 w-9 items-center justify-center rounded-md",
@@ -14,10 +14,11 @@ const btnClasses = cn(
 
 export function ThemeToggle() {
   const { theme, setTheme } = useTheme();
-  const [mounted, setMounted] = useState(false);
-  useEffect(() => setMounted(true), []);
+  // next-themes only knows the resolved theme on the client, so the button
+  // renders as an empty placeholder until hydration.
+  const hydrated = useIsHydrated();
 
-  if (!mounted) return <div className={btnClasses} />;
+  if (!hydrated) return <div className={btnClasses} />;
 
   const isDark = theme === "dark";
   return (

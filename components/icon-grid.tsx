@@ -95,9 +95,14 @@ export function IconGrid({ collection }: Props) {
           : activeCategory;
 
   // Reset focus when the visible list changes (filter/category/style).
-  useEffect(() => {
+  // Adjusted during render rather than in an effect: an effect would paint
+  // one frame with the stale index still highlighted.
+  const listKey = `${activeCategory}|${filter}|${viewStyle}`;
+  const [prevListKey, setPrevListKey] = useState(listKey);
+  if (listKey !== prevListKey) {
+    setPrevListKey(listKey);
     setFocusedIndex(null);
-  }, [activeCategory, filter, viewStyle]);
+  }
 
   // Global keyboard handling: arrow keys navigate the grid, Enter opens
   // the focused icon, "/" or "s" focuses the search palette, Esc clears

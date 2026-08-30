@@ -71,12 +71,16 @@ export function DocsToc({
 
   // When the active section changes to a child, auto-expand its parent so
   // the highlight is visible. Never auto-collapse — user might want it open.
-  useEffect(() => {
+  // Adjusted during render so the parent is already open on the frame the
+  // highlight moves.
+  const [prevActiveId, setPrevActiveId] = useState(activeId);
+  if (activeId !== prevActiveId) {
+    setPrevActiveId(activeId);
     const parent = items.find((i) => i.id === activeId)?.parent;
     if (parent) {
       setExpanded((prev) => (prev[parent] ? prev : { ...prev, [parent]: true }));
     }
-  }, [activeId, items]);
+  }
 
   useEffect(() => {
     const root = document.getElementById(scrollRootId);
