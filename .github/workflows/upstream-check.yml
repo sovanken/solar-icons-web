@@ -1,0 +1,30 @@
+# Weekly drift check against the Iconify API.
+#
+# Deliberately not part of ci.yml: it needs the network and depends on data
+# we do not control, so an upstream rename would otherwise fail pull
+# requests that have nothing to do with it. A failure here emails the repo
+# owner, which is the notification we actually want.
+name: Upstream check
+
+on:
+  schedule:
+    # Mondays, 07:00 UTC.
+    - cron: "0 7 * * 1"
+  workflow_dispatch:
+
+jobs:
+  categories:
+    name: Categories still match Iconify
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      # No npm ci: the check uses only the Node standard library, so
+      # installing the app's dependencies would be pure latency.
+      - name: Check category names
+        run: npm run check:categories

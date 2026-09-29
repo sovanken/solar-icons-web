@@ -6,6 +6,7 @@ import { cn } from "@/lib/utils";
 import { useStore } from "@/lib/store";
 import { NEW_ICON_NAMES } from "@/lib/whats-new";
 import { useFavorites } from "@/lib/favorites";
+import { CATEGORY_ICONS, FALLBACK_CATEGORY_ICON } from "@/lib/categories";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 
 interface Props {
@@ -13,46 +14,6 @@ interface Props {
   order: string[];
   total: number;
 }
-
-const CATEGORY_ICON: Record<string, string> = {
-  Arrows: "solar:arrow-right-bold-duotone",
-  "Arrows Action": "solar:refresh-bold-duotone",
-  Astronomy: "solar:planet-bold-duotone",
-  "Building, Infrastructure": "solar:buildings-2-bold-duotone",
-  "Business, Statistic": "solar:chart-bold-duotone",
-  Call: "solar:phone-bold-duotone",
-  "Design, Tools": "solar:palette-bold-duotone",
-  "Electronic, Devices": "solar:cpu-bold-duotone",
-  "Essentional, UI": "solar:home-2-bold-duotone",
-  "Faces, Emotions, Stickers": "solar:emoji-funny-square-bold-duotone",
-  Files: "solar:file-bold-duotone",
-  Folders: "solar:folder-bold-duotone",
-  "Food, Kitchen": "solar:cup-hot-bold-duotone",
-  Hands: "solar:hand-shake-bold-duotone",
-  "Home, Furniture": "solar:sofa-2-bold-duotone",
-  Like: "solar:heart-bold-duotone",
-  List: "solar:list-bold-duotone",
-  "Map & Location": "solar:map-point-bold-duotone",
-  Medicine: "solar:pill-bold-duotone",
-  "Messages, Conversation": "solar:chat-round-bold-duotone",
-  Money: "solar:wallet-money-bold-duotone",
-  "Nature, Travel": "solar:leaf-bold-duotone",
-  "Network, IT, Programming": "solar:code-bold-duotone",
-  Notes: "solar:notebook-bold-duotone",
-  Notifications: "solar:bell-bold-duotone",
-  School: "solar:square-academic-cap-bold-duotone",
-  Search: "solar:magnifier-bold-duotone",
-  Security: "solar:shield-check-bold-duotone",
-  "Settings, Fine Tuning": "solar:settings-bold-duotone",
-  "Shopping, Ecommerce": "solar:cart-3-bold-duotone",
-  Sports: "solar:basketball-bold-duotone",
-  "Text Formatting": "solar:text-square-2-bold-duotone",
-  Time: "solar:clock-circle-bold-duotone",
-  "Transport, Parts, Service": "solar:bus-bold-duotone",
-  Users: "solar:users-group-two-rounded-bold-duotone",
-  "Video, Audio, Sound": "solar:play-circle-bold-duotone",
-  Weather: "solar:sun-2-bold-duotone",
-};
 
 export function MobileNav({ categories, order, total }: Props) {
   const { activeCategory, setActiveCategory } = useStore();
@@ -115,7 +76,7 @@ export function MobileNav({ categories, order, total }: Props) {
               key={cat}
               active={activeCategory === cat}
               onClick={() => pick(cat)}
-              icon={CATEGORY_ICON[cat] ?? "solar:folder-bold-duotone"}
+              icon={CATEGORY_ICONS[cat] ?? FALLBACK_CATEGORY_ICON}
               label={cat}
               count={categories[cat].length}
             />

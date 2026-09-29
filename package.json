@@ -18,7 +18,8 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "check:unmounted": "node scripts/check-unmounted.mjs"
+    "check:unmounted": "node scripts/check-unmounted.mjs",
+    "check:categories": "node scripts/check-categories.mjs"
   },
   "dependencies": {
     "@base-ui/react": "^1.6.0",
