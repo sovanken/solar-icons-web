@@ -34,6 +34,7 @@ export function IconGrid({ collection }: Props) {
     setSelected,
   } = useStore();
   const { favorites } = useFavorites();
+  const newSet = useMemo(() => new Set(NEW_ICON_NAMES), []);
 
   // Grid keyboard focus. Null means no icon is focused; user must ↓/→ into
   // the grid to activate. Reset whenever the visible list changes.
@@ -387,6 +388,8 @@ export function IconGrid({ collection }: Props) {
                 suffix={suffix}
                 onClick={(base, category) => setSelected({ base, category })}
                 focused={i === focusedIndex}
+                // Redundant in the New view, where every tile qualifies.
+                isNew={activeCategory !== "__new__" && newSet.has(item.base)}
               />
             ))}
           </div>

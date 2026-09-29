@@ -58,9 +58,7 @@ export function Sidebar({ categories, order, total }: Props) {
   return (
     <aside className="hidden md:flex w-64 shrink-0 flex-col border-r border-border/60 bg-muted/20 overflow-y-auto overflow-x-hidden">
       <div className="p-3 space-y-0.5">
-        <div className="px-3 py-2 text-[10px] font-bold uppercase tracking-wider text-muted-foreground">
-          Categories
-        </div>
+        <GroupLabel>Browse</GroupLabel>
 
         <CatButton
           active={activeCategory === "__all__"}
@@ -88,9 +86,11 @@ export function Sidebar({ categories, order, total }: Props) {
           accent="text-amber-500"
         />
 
-        {/* All Icons / New / Starred are views, not categories — the rule
-            keeps them from reading as the first three Solar categories. */}
-        <div className="mx-3 my-2 h-px bg-border/60" role="presentation" />
+        {/* All Icons / New / Starred are views over the whole catalog, not
+            Solar categories. They sat under a single "Categories" heading
+            and read as the first three categories in the list; naming both
+            groups is what separates them. */}
+        {hasCategories && <GroupLabel className="mt-4">Categories</GroupLabel>}
 
         {visibleOrder.map((cat) => (
           <CatButton
@@ -116,6 +116,25 @@ export function Sidebar({ categories, order, total }: Props) {
         )}
       </div>
     </aside>
+  );
+}
+
+function GroupLabel({
+  children,
+  className,
+}: {
+  children: React.ReactNode;
+  className?: string;
+}) {
+  return (
+    <div
+      className={cn(
+        "px-3 py-2 text-[10px] font-bold uppercase tracking-wider text-muted-foreground",
+        className,
+      )}
+    >
+      {children}
+    </div>
   );
 }
 

@@ -10,9 +10,18 @@ interface Props {
   suffix: string;
   onClick: (base: string, category: string) => void;
   focused?: boolean;
+  /// Shipped in one of the releases recorded in lib/whats-new.ts.
+  isNew?: boolean;
 }
 
-export function IconCard({ base, category, suffix, onClick, focused }: Props) {
+export function IconCard({
+  base,
+  category,
+  suffix,
+  onClick,
+  focused,
+  isNew,
+}: Props) {
   const iconName = `${PREFIX}:${base}${suffix}`;
 
   return (
@@ -37,6 +46,14 @@ export function IconCard({ base, category, suffix, onClick, focused }: Props) {
       title={base}
     >
       <div className="absolute inset-0 bg-gradient-to-br from-transparent to-foreground/[0.04] opacity-0 group-hover:opacity-100 transition-opacity" />
+      {/* Colour alone would not carry this, so the name below also gains a
+          screen-reader-only suffix. */}
+      {isNew && (
+        <span
+          aria-hidden="true"
+          className="absolute right-2 top-2 h-1.5 w-1.5 rounded-full bg-emerald-500 ring-2 ring-card"
+        />
+      )}
       <div
         className="relative z-10 grid place-items-center transition-transform group-hover:scale-110"
         style={{ height: "var(--icon-size, 48px)", width: "var(--icon-size, 48px)" }}
@@ -52,6 +69,7 @@ export function IconCard({ base, category, suffix, onClick, focused }: Props) {
           (e.g. "double-alt-ar…"). */}
       <span className="relative z-10 line-clamp-2 w-full text-center font-mono text-[10px] leading-tight text-muted-foreground [overflow-wrap:anywhere]">
         {base}
+        {isNew && <span className="sr-only"> (recently added)</span>}
       </span>
     </button>
   );
