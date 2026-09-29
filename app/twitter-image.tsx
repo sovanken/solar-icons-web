@@ -3,7 +3,7 @@
 import OpenGraphImage from "./opengraph-image";
 
 export const runtime = "edge";
-export const alt = "Solar Iconkit — 1,269 Flutter icons across 6 native styles";
+export const alt = "Solar Iconkit — 1,451 Flutter icons across 6 native styles";
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 

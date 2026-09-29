@@ -5,7 +5,7 @@ export default function manifest(): MetadataRoute.Manifest {
     name: "Solar Iconkit",
     short_name: "Solar Iconkit",
     description:
-      "Interactive browser for the Solar icon set — 1,269 icons in 6 native styles. Companion to the solar_iconkit Flutter package.",
+      "Interactive browser for the Solar icon set — 1,451 icons in 6 native styles. Companion to the solar_iconkit Flutter package.",
     start_url: "/",
     display: "standalone",
     background_color: "#ffffff",

@@ -4,7 +4,7 @@ import { ImageResponse } from "next/og";
 export const runtime = "edge";
 
 // Image metadata
-export const alt = "Solar Iconkit — 1,269 Flutter icons across 6 native styles";
+export const alt = "Solar Iconkit — 1,451 Flutter icons across 6 native styles";
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 
@@ -109,7 +109,7 @@ export default async function OpenGraphImage() {
             maxWidth: 900,
           }}
         >
-          <div style={{ display: "flex" }}>1,269 icons.</div>
+          <div style={{ display: "flex" }}>1,451 icons.</div>
           <div style={{ display: "flex" }}>6 native styles. One widget.</div>
         </div>
 
