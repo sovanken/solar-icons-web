@@ -3,7 +3,7 @@
  *
  * This repo has produced three of these: the grid search `filter` had no UI,
  * MobileNav was complete but never mounted (leaving phones with no category
- * navigation at all), and StyleBar duplicates the header chips. Each one
+ * navigation at all), and StyleBar duplicated the header chips. Each one
  * looked finished in the source and did nothing in the browser, which is
  * exactly the failure a build cannot catch — dead code compiles fine.
  *
@@ -18,12 +18,11 @@ const SOURCE_DIRS = ["app", "components", "lib"];
 /**
  * Deliberately retained despite being unmounted. Keep this list short and
  * say why — an entry here is a promise that the code is kept on purpose.
+ *
+ * Empty on purpose: StyleBar was the only entry and it was deleted rather
+ * than kept, since the header chips it duplicated are the live control.
  */
-const RETAINED = {
-  // README documents it as "legacy - style selector, retained for parity".
-  // Duplicates the style chips inlined in site-header.tsx.
-  StyleBar: "legacy duplicate of the header style chips",
-};
+const RETAINED = {};
 
 const ALLOWED = new Set([
   ...Object.keys(RETAINED),
