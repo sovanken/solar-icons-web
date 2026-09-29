@@ -6,7 +6,7 @@
 [![Tailwind CSS](https://img.shields.io/badge/Tailwind-4-38BDF8?logo=tailwindcss&logoColor=white)](https://tailwindcss.com)
 [![Support](https://img.shields.io/badge/Support-Ko--fi-FF5E5B?logo=ko-fi&logoColor=white)](https://ko-fi.com/sovanken)
 
-An interactive icon browser for the [Solar icon set](https://solar-icons-web.vercel.app) — **1,269 icons across 6 native styles**. Preview any icon at any size, switch styles instantly, and copy the exact Flutter widget code you need.
+An interactive icon browser for the [Solar icon set](https://solar-icons-web.vercel.app) — **1,451 icons across 6 native styles**. Preview any icon at any size, switch styles instantly, and copy the exact Flutter widget code you need.
 
 Companion to the [`solar_iconkit`](https://pub.dev/packages/solar_iconkit) Flutter package on pub.dev.
 
@@ -18,7 +18,7 @@ Companion to the [`solar_iconkit`](https://pub.dev/packages/solar_iconkit) Flutt
 
 ## Highlights
 
-- **1,269 icons · 6 native styles** — linear, outline, broken, bold, line-duotone, bold-duotone. Every style shown live in the top bar as a segmented chip control.
+- **1,451 icons · 6 native styles** — linear, outline, broken, bold, line-duotone, bold-duotone. Every style shown live in the top bar as a segmented chip control.
 - **37 categories** with hand-picked bold-duotone leading icons in the sidebar (mobile: a slide-in drawer).
 - **Search that reads like a person types it** — an always-visible box filters the grid in place (press `/` to focus it from anywhere), plus a **⌘K / Ctrl+K palette** over the whole catalog. Both share one ranker:
   - multi-word: `arrow right` finds `arrow-right`
@@ -71,10 +71,12 @@ Open <http://localhost:3000>.
 ### Scripts
 
 ```bash
-npm run dev      # dev server on :3000 (Turbopack)
-npm run build    # production build
-npm run start    # start production server
-npm run lint     # run eslint
+npm run dev               # dev server on :3000 (Turbopack)
+npm run build             # production build
+npm run start             # start production server
+npm run lint              # run eslint
+npm run check:unmounted   # fail on components defined but never imported
+npm run check:categories  # fail if lib/categories.ts drifts from the Iconify API
 ```
 
 ### Environment
@@ -156,18 +158,24 @@ solar-icons-web/
 │   ├── code-block.tsx      Reusable code block with copy button
 │   ├── theme-toggle.tsx    Light / dark switch
 │   ├── skeleton-grid.tsx   Loading placeholder
-│   ├── style-bar.tsx       (legacy — style selector, retained for parity)
 │   ├── icon-preload.tsx    Warms the Iconify cache on first render
 │   ├── providers.tsx       Theme · tooltip · store · toaster
 │   └── ui/                 shadcn primitives (button, dialog, tabs, sheet …)
 ├── lib/
 │   ├── libraries.ts        Solar prefix + 6-style definitions
-│   ├── categories.ts       37-category → bold-duotone icon map
+│   ├── categories.ts       37-category → bold-duotone icon map (single source)
 │   ├── iconify.ts          Collection + SVG fetch helpers
+│   ├── search.ts           Word-tokenised ranking + synonym aliases
+│   ├── whats-new.ts        Icons added per solar_iconkit release
+│   ├── favorites.ts        Starred icons, persisted per browser
+│   ├── persisted.ts        useSyncExternalStore-backed localStorage hooks
 │   ├── converters.ts       SVG → PNG / JPG / WebP / Flutter code
 │   ├── styles.ts           Size preset table
 │   ├── store.tsx           Global state (view style, filter, selected)
 │   └── utils.ts            cn() helper
+├── scripts/
+│   ├── check-unmounted.mjs   Guards against dead components
+│   └── check-categories.mjs  Guards against category drift + rival maps
 ├── package.json
 ├── tsconfig.json
 ├── next.config.ts          Security headers · CSP · cache rules

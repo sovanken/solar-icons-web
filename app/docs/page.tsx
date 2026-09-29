@@ -18,6 +18,7 @@ const TOC: TocItem[] = [
   { id: "quickstart", label: "Quick start" },
   { id: "widget-api", label: "Widget API" },
   { id: "styles", label: "Styles" },
+  { id: "default-style", label: "Default style" },
   { id: "recipes", label: "Recipes" },
   { id: "in-buttons", label: "  Buttons", parent: "recipes" },
   { id: "in-lists", label: "  Lists", parent: "recipes" },
@@ -37,6 +38,7 @@ const TOC: TocItem[] = [
   { id: "fx-glass", label: "  Frosted glass", parent: "custom-effects" },
   { id: "fx-outline-glow", label: "  Outline glow", parent: "custom-effects" },
   { id: "naming", label: "Icon naming" },
+  { id: "categories", label: "Categories" },
   { id: "accessibility", label: "Accessibility" },
   { id: "rtl", label: "RTL and text direction" },
   { id: "performance", label: "Performance" },
@@ -109,8 +111,8 @@ export default function DocsPage() {
               <p>
                 <strong>Solar Iconkit</strong> is a Flutter package that bundles
                 the entire Solar icon set by 480 Design —{" "}
-                <strong>1,269 icons across 6 native styles</strong> (7,614 SVG
-                variants total) — behind a single, type-safe{" "}
+                <strong>1,451 icons across 6 native styles</strong> (8,718 SVG
+                files) — behind a single, type-safe{" "}
                 <code>SolarIcon</code> widget. MIT-licensed, works offline, no
                 setup beyond adding the dependency. Preview every icon on the{" "}
                 <Link
@@ -133,7 +135,7 @@ export default function DocsPage() {
                 filename="pubspec.yaml"
                 lang="yaml"
                 code={`dependencies:
-  solar_iconkit: ^1.0.0`}
+  solar_iconkit: ^2.0.0`}
               />
               <p>Or use the CLI:</p>
               <CodeBlock
@@ -214,7 +216,7 @@ SolarIcon(
                 </thead>
                 <tbody className="text-muted-foreground">
                   <ParamRow name="name" type="String" def="required" />
-                  <ParamRow name="style" type="SolarIconStyle" def="linear" />
+                  <ParamRow name="style" type="SolarIconStyle?" def="SolarIconTheme → linear" />
                   <ParamRow name="size" type="double?" def="IconTheme → 24" />
                   <ParamRow name="color" type="Color?" def="IconTheme → black87" />
                   <ParamRow name="opacity" type="double" def="1.0" />
@@ -229,7 +231,7 @@ SolarIcon(
                 </tbody>
               </table>
 
-              <Sub id="widget-api-resolution" title="How color and size resolve">
+              <Sub id="widget-api-resolution" title="How style, color and size resolve">
                 <p>
                   Matches Flutter&apos;s built-in <code>Icon</code> widget
                   resolution order:
@@ -239,10 +241,21 @@ SolarIcon(
                     If passed explicitly on the widget, use that value.
                   </li>
                   <li>
-                    Otherwise read <code>IconTheme.of(context)</code>.
+                    Otherwise read the enclosing theme —{" "}
+                    <code>IconTheme.of(context)</code> for size, color and
+                    opacity;{" "}
+                    <a
+                      href="#default-style"
+                      className="text-primary underline underline-offset-2"
+                    >
+                      <code>SolarIconTheme.of(context)</code>
+                    </a>{" "}
+                    for style.
                   </li>
                   <li>
-                    Fall back to defaults (24 px, <code>Color(0xDD000000)</code>).
+                    Fall back to defaults (24 px,{" "}
+                    <code>Color(0xDD000000)</code>,{" "}
+                    <code>SolarIconStyle.linear</code>).
                   </li>
                 </ol>
                 <p>
@@ -323,6 +336,59 @@ SolarIcon('totally-typoed-name')`}
                 chrome, promote to <code>bold</code> for active or selected
                 states, and reserve <code>boldDuotone</code> for feature
                 moments and hero areas.
+              </Callout>
+            </Section>
+
+            {/* Default style ----------------------------------------- */}
+            <Section id="default-style" title="Default style">
+              <p>
+                <code>SolarIcon</code> already inherits size, color and
+                opacity from the ambient <code>IconTheme</code>. Style was the
+                one property you could not set once for a subtree, so an app
+                with a house style had to repeat <code>style:</code> at every
+                call site. <code>SolarIconTheme</code> closes that gap.
+              </p>
+              <CodeBlock
+                lang="dart"
+                code={`SolarIconTheme(
+  style: SolarIconStyle.boldDuotone,
+  child: MyApp(),
+)`}
+              />
+              <p>
+                An explicit <code>style:</code> always wins, and nesting works
+                the way <code>IconTheme</code> does — the nearest ancestor
+                applies:
+              </p>
+              <CodeBlock
+                lang="dart"
+                code={`SolarIconTheme(
+  style: SolarIconStyle.linear,
+  child: Column(
+    children: [
+      SolarIcon(SolarIcons.home2),                             // linear
+      SolarIcon(SolarIcons.home2, style: SolarIconStyle.bold), // bold
+      SolarIconTheme(
+        style: SolarIconStyle.broken,
+        child: SolarIcon(SolarIcons.home2),                    // broken
+      ),
+    ],
+  ),
+)`}
+              />
+              <p>
+                To read the active style yourself,{" "}
+                <code>SolarIconTheme.of(context)</code> falls back to{" "}
+                <code>SolarIconStyle.linear</code> when there is no enclosing
+                theme. <code>maybeOf</code> returns null instead, for when you
+                need to tell &ldquo;no theme&rdquo; apart from &ldquo;a theme
+                that happens to be linear&rdquo;.
+              </p>
+              <Callout icon="solar:info-circle-bold-duotone" tone="info">
+                New in <strong>2.0.0</strong>. The widget&apos;s{" "}
+                <code>style</code> field became nullable to make this work,
+                which is the release&apos;s only breaking change — code that
+                always passed <code>style:</code> is unaffected.
               </Callout>
             </Section>
 
@@ -927,10 +993,69 @@ solar:home-2-bold           → Bold filled
 solar:home-2-line-duotone   → Line duotone
 solar:home-2-bold-duotone   → Bold duotone`}
               />
+              <Sub id="naming-retired" title="Retired names">
+                <p>
+                  Solar renames icons upstream from time to time. Old names
+                  keep working: each becomes a <code>@Deprecated</code>{" "}
+                  constant whose value is the <em>new</em> name, so existing
+                  code compiles and renders identically while your IDE points
+                  at the replacement.
+                </p>
+                <CodeBlock
+                  lang="dart"
+                  code={`SolarIcons.magnifer;  // deprecated, == 'magnifier'
+SolarIcons.magnifier; // current
+
+// Raw strings are resolved too, at runtime:
+SolarIcons.legacyAliases['sidebar']; // 'panel-text-right'
+SolarIcon.resolveName('chat-dots');  // 'chat-square-dots'`}
+                />
+                <p>
+                  <code>SolarIcons.legacyAliases</code> holds all{" "}
+                  <strong>68</strong> retired names. Nothing is ever removed
+                  from it, so a name that worked in any past release still
+                  works.
+                </p>
+              </Sub>
               <Callout icon="solar:info-circle-bold-duotone" tone="info">
                 Every constant on the <code>SolarIcons</code> class carries a
                 Dartdoc comment (<code>Solar icon &quot;X&quot;.</code>) so
                 autocomplete / hover in your IDE reveals the source name.
+              </Callout>
+            </Section>
+
+            {/* Categories -------------------------------------------- */}
+            <Section id="categories" title="Categories">
+              <p>
+                Solar groups its icons into 37 categories, and the package
+                ships that grouping so you can build a picker without
+                hard-coding a list or calling an API at runtime.
+              </p>
+              <CodeBlock
+                lang="dart"
+                code={`SolarIcons.categories.keys.length;        // 37
+SolarIcons.categories['Weather']!.length; // 36
+
+SolarIcons.categoryOf('home-2');          // 'UI'
+SolarIcons.categoryOf('bell');            // 'Notifications'
+SolarIcons.categoryOf('not-an-icon');     // null`}
+              />
+              <p>
+                <code>categoryOf</code> resolves deprecated names first, so a
+                retired name still reports the category of the icon it now
+                points at. Every name across all 37 lists is the same set as{" "}
+                <code>SolarIcons.all</code>.
+              </p>
+              <Callout icon="solar:danger-triangle-bold-duotone" tone="warn">
+                Reading <code>categories</code> or <code>all</code> means your
+                icon names are built at runtime, which the{" "}
+                <a
+                  href="#bundle-size"
+                  className="text-primary underline underline-offset-2"
+                >
+                  subset tool
+                </a>{" "}
+                cannot trace. It stops rather than shipping blank squares.
               </Callout>
             </Section>
 
@@ -1066,8 +1191,8 @@ solar:home-2-bold-duotone   → Bold duotone`}
             {/* Bundle size ------------------------------------------- */}
             <Section id="bundle-size" title="Bundle size">
               <p>
-                The full asset bundle is <strong>~6.1 MB of raw SVG bytes</strong>{" "}
-                across all six styles (7,614 individually-minified files).
+                The full asset bundle is <strong>~6.5 MB of raw SVG bytes</strong>{" "}
+                across all six styles (8,718 individually-minified files).
                 Compressed on the pub.dev archive: about 18 MB including the
                 example app, tests, and screenshots.
               </p>
@@ -1076,42 +1201,45 @@ solar:home-2-bold-duotone   → Bold duotone`}
                 assets because <code>SolarIcon</code> resolves paths at runtime
                 — so the whole set ships by default.
               </p>
-              <Sub id="bundle-size-trim" title="Trimming unused styles">
+              <Sub id="bundle-size-subset" title="Shipping only what you use">
                 <p>
-                  If your app uses only a couple of styles, fork the package
-                  (or use a <code>dependency_overrides</code> path) and edit{" "}
-                  <code>pubspec.yaml</code>:
+                  The package ships a subset tool. It scans your Dart sources
+                  for <code>SolarIcons.&lt;name&gt;</code> and{" "}
+                  <code>SolarIcon(&apos;&lt;name&gt;&apos;)</code> references,
+                  copies just those SVGs into your app, and prints the two
+                  lines of setup it needs:
                 </p>
                 <CodeBlock
-                  lang="yaml"
-                  code={`flutter:
-  assets:
-    - assets/icons/linear/
-    - assets/icons/bold/
-    # remove the styles you do not use`}
+                  filename="Terminal"
+                  lang="bash"
+                  code={`dart run solar_iconkit:subset --styles linear,bold`}
+                />
+                <p>Options:</p>
+                <CodeBlock
+                  lang="bash"
+                  code={`--styles <list>  linear, outline, broken, bold, lineDuotone, boldDuotone
+                 Default: all six.
+--scan <dirs>    Directories to scan for usage. Default: lib
+--out <dir>      Where to write the subset. Default: assets/solar
+--all            Include every icon, skipping the usage scan.`}
                 />
                 <p>
-                  Then delete the unused style folders under{" "}
-                  <code>assets/icons/</code>. The build only includes assets
-                  you declare. Cutting from 6 styles to 2 removes roughly two
-                  thirds of the bundle.
+                  Point the package at the copied assets once, during startup:
                 </p>
+                <CodeBlock
+                  lang="dart"
+                  code={`SolarIcon.assetBasePath = 'assets/solar';
+SolarIcon.assetPackage = null; // the assets are yours now, not the package's`}
+                />
+                <Callout icon="solar:danger-triangle-bold-duotone" tone="warn">
+                  <strong>It refuses to run</strong> if it finds{" "}
+                  <code>SolarIcons.all</code>, <code>.categories</code> or{" "}
+                  <code>.legacyAliases</code> in your sources. Those build icon
+                  names at runtime, so a scan cannot see which icons you need,
+                  and a subset would ship blank squares to production. Use{" "}
+                  <code>--all</code> if that is deliberate.
+                </Callout>
               </Sub>
-              <Callout icon="solar:rocket-2-bold-duotone" tone="tip">
-                <strong>Roadmap.</strong> Per-icon tree-shaking (via a{" "}
-                <code>build_runner</code> step that scans consumer code for{" "}
-                <code>SolarIcons.xxx</code> references and emits an asset
-                subset) is planned for <code>v2.0</code>. Track progress at{" "}
-                <a
-                  href="https://github.com/sovanken/solar_iconkit/issues"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-primary underline underline-offset-2"
-                >
-                  the issues page
-                </a>
-                .
-              </Callout>
             </Section>
 
             {/* Testing ----------------------------------------------- */}
@@ -1172,6 +1300,37 @@ void main() {
                 platform (usually Linux) for cross-platform test consistency —
                 font and SVG rasterization can vary subtly between OSes.
               </p>
+              <Sub id="testing-upgrading" title="Upgrading tests from 1.x">
+                <p>
+                  <code>style</code> is nullable as of 2.0.0, so it reads back
+                  as <code>null</code> when the call site did not pass one —
+                  where 1.x reported <code>SolarIconStyle.linear</code>. Assert
+                  on what actually renders instead:
+                </p>
+                <CodeBlock
+                  lang="dart"
+                  code={`// 1.x — now fails, style is null when unset.
+expect(widget.style, SolarIconStyle.linear);
+
+// 2.x — assert the resolved style.
+expect(widget.style ?? SolarIconTheme.of(context), SolarIconStyle.linear);`}
+                />
+                <p>
+                  If a test points the package at a{" "}
+                  <a
+                    href="#bundle-size"
+                    className="text-primary underline underline-offset-2"
+                  >
+                    subset
+                  </a>
+                  , restore the defaults afterwards so the override cannot leak
+                  into the next test:
+                </p>
+                <CodeBlock
+                  lang="dart"
+                  code={`tearDown(SolarIcon.useBundledAssets);`}
+                />
+              </Sub>
             </Section>
 
             {/* Troubleshooting -------------------------------------- */}
@@ -1248,25 +1407,30 @@ void main() {
                 >
                   Semantic Versioning 2.0.0
                 </a>
-                . Since 1.0, the API is committed to stability:
+                . The current release is <strong>2.0.0</strong>.
               </p>
               <ul className="text-sm space-y-1 mt-2 ml-5 list-disc">
                 <li>
-                  <strong>1.x.y patch bumps</strong> — bug fixes, doc updates,
-                  and non-breaking internal improvements.
+                  <strong>Patch bumps</strong> — bug fixes, doc updates, and
+                  non-breaking internal improvements.
                 </li>
                 <li>
-                  <strong>1.x minor bumps</strong> — new optional widget
-                  parameters, new icons pulled from Solar upstream.
+                  <strong>Minor bumps</strong> — new optional widget
+                  parameters, new icons pulled from Solar upstream. An upstream
+                  rename keeps the old name as a deprecated constant that
+                  resolves to the new one, so it is never breaking.
                 </li>
                 <li>
-                  <strong>2.0</strong> — reserved for breaking API changes
-                  (per-icon tree-shaking, per-style sub-packages, etc.).
+                  <strong>Major bumps</strong> — breaking API changes. 2.0.0
+                  made the widget&apos;s <code>style</code> field nullable so{" "}
+                  <code>SolarIconTheme</code> could supply a default; it also
+                  added categories and the subset tool, and Solar redrew eight
+                  icons under the same name.
                 </li>
               </ul>
               <p className="mt-3">
-                Pin <code>^1.0.0</code> to safely receive every 1.x update.
-                Consumer code that works on 1.0.0 will keep working on 1.99.9.
+                Pin <code>^2.0.0</code> to receive every 2.x update. Code that
+                works on 2.0.0 will keep working on 2.99.9.
               </p>
             </Section>
 
@@ -1410,7 +1574,7 @@ function Hero() {
         <div>
           <div className="text-lg font-bold">Solar Iconkit for Flutter</div>
           <div className="text-[13px] text-muted-foreground">
-            1,269 icons · 6 styles · MIT · Flutter ≥ 3.27
+            1,451 icons · 6 styles · MIT · Flutter ≥ 3.27
           </div>
         </div>
       </div>
@@ -1445,7 +1609,7 @@ function FeatureGrid() {
   const items = [
     {
       icon: "solar:widget-5-bold-duotone",
-      title: "1,269 icons",
+      title: "1,451 icons",
       body: "Curated across 37 categories from arrows to weather.",
     },
     {
