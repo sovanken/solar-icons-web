@@ -4,7 +4,7 @@ import { useState } from "react";
 import { Icon } from "@iconify/react";
 import { cn } from "@/lib/utils";
 import { useStore } from "@/lib/store";
-import { NEW_ICON_NAMES } from "@/lib/whats-new";
+import { LATEST_RELEASE, NEW_ICON_NAMES } from "@/lib/whats-new";
 import { useFavorites } from "@/lib/favorites";
 import { CATEGORY_ICONS, FALLBACK_CATEGORY_ICON } from "@/lib/categories";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
@@ -56,7 +56,7 @@ export function MobileNav({ categories, order, total }: Props) {
             active={activeCategory === "__new__"}
             onClick={() => pick("__new__")}
             icon="solar:stars-bold-duotone"
-            label="New"
+            label={`New in ${LATEST_RELEASE.version}`}
             count={NEW_ICON_NAMES.length}
           />
           {/* Starred was reachable only from the desktop sidebar, so phone

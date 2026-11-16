@@ -5,7 +5,7 @@ import { useStore } from "@/lib/store";
 import { type CollectionData } from "@/lib/iconify";
 import { STYLE_MAP } from "@/lib/libraries";
 import { SIZE_PRESETS } from "@/lib/styles";
-import { NEW_ICON_NAMES } from "@/lib/whats-new";
+import { LATEST_RELEASE, NEW_ICON_NAMES } from "@/lib/whats-new";
 import { fuzzyFilter } from "@/lib/search";
 import { useFavorites } from "@/lib/favorites";
 import { IconCard } from "./icon-card";
@@ -54,7 +54,7 @@ export function IconGrid({ collection }: Props) {
         categories[c].map((b) => ({ base: b, category: c })),
       );
     } else if (activeCategory === "__new__") {
-      // Recently added icons, newest release first. Names are filtered
+      // Icons added in the current release. Names are filtered
       // against the live catalog so a stale entry drops out rather than
       // rendering a broken tile.
       const catByBase = new Map<string, string>();
@@ -86,11 +86,21 @@ export function IconGrid({ collection }: Props) {
     return fuzzyFilter(all, filter);
   }, [collection, activeCategory, filter, favorites]);
 
+  // Fixed locale and UTC so server and client render the same string.
+  const releaseDate = new Date(
+    `${LATEST_RELEASE.date}T00:00:00Z`,
+  ).toLocaleDateString("en-US", {
+    year: "numeric",
+    month: "short",
+    day: "numeric",
+    timeZone: "UTC",
+  });
+
   const title =
     activeCategory === "__all__"
       ? "All Icons"
       : activeCategory === "__new__"
-        ? "New"
+        ? `New in ${LATEST_RELEASE.version}`
         : activeCategory === "__favorites__"
           ? "Starred"
           : activeCategory;
@@ -230,7 +240,9 @@ export function IconGrid({ collection }: Props) {
             </Badge>
           </div>
           <p className="mt-1.5 text-xs sm:text-sm text-muted-foreground">
-            {visible.length.toLocaleString()} icons in {styleLabel} · tap any icon to preview and export
+            {activeCategory === "__new__"
+              ? `Added in solar_iconkit ${LATEST_RELEASE.version} (${releaseDate}) · tap any icon to preview and export`
+              : `${visible.length.toLocaleString()} icons in ${styleLabel} · tap any icon to preview and export`}
           </p>
 
           <div className="mt-3 sm:mt-4 flex flex-wrap items-center gap-2 sm:gap-3">
