@@ -6,7 +6,7 @@
 [![Tailwind CSS](https://img.shields.io/badge/Tailwind-4-38BDF8?logo=tailwindcss&logoColor=white)](https://tailwindcss.com)
 [![Support](https://img.shields.io/badge/Support-Ko--fi-FF5E5B?logo=ko-fi&logoColor=white)](https://ko-fi.com/sovanken)
 
-An interactive icon browser for the [Solar icon set](https://solar-icons-web.vercel.app) — **1,451 icons across 6 native styles**. Preview any icon at any size, switch styles instantly, and copy the exact Flutter widget code you need.
+An interactive icon browser for the [Solar icon set](https://solar-icons-web.vercel.app) — **1,576 icons across 6 native styles**. Preview any icon at any size, switch styles instantly, and copy the exact Flutter widget code you need.
 
 Companion to the [`solar_iconkit`](https://pub.dev/packages/solar_iconkit) Flutter package on pub.dev.
 
@@ -18,7 +18,7 @@ Companion to the [`solar_iconkit`](https://pub.dev/packages/solar_iconkit) Flutt
 
 ## Highlights
 
-- **1,451 icons · 6 native styles** — linear, outline, broken, bold, line-duotone, bold-duotone. Every style shown live in the top bar as a segmented chip control.
+- **1,576 icons · 6 native styles** — linear, outline, broken, bold, line-duotone, bold-duotone. Every style shown live in the top bar as a segmented chip control.
 - **37 categories** with hand-picked bold-duotone leading icons in the sidebar (mobile: a slide-in drawer).
 - **Search that reads like a person types it** — an always-visible box filters the grid in place (press `/` to focus it from anywhere), plus a **⌘K / Ctrl+K palette** over the whole catalog. Both share one ranker:
   - multi-word: `arrow right` finds `arrow-right`
