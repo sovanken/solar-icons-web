@@ -75,6 +75,12 @@ export default function DocsPage() {
               Browse
             </Link>
             <Link
+              href="/mcp"
+              className="rounded-md px-3 py-1.5 text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
+            >
+              MCP
+            </Link>
+            <Link
               href="/docs"
               className="rounded-md px-3 py-1.5 text-foreground bg-muted font-medium"
             >

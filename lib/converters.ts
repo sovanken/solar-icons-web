@@ -71,7 +71,7 @@ const DART_RESERVED = new Set([
   "base",
 ]);
 
-function toDartIdentifier(baseName: string): string {
+export function toDartIdentifier(baseName: string): string {
   const parts = baseName.split(/[-_]+/).filter(Boolean);
   if (parts.length === 0) return "unnamed";
   const head = parts[0].toLowerCase();
@@ -85,7 +85,7 @@ function toDartIdentifier(baseName: string): string {
   return ident;
 }
 
-const STYLE_ID_TO_DART_ENUM: Record<string, string> = {
+export const STYLE_ID_TO_DART_ENUM: Record<string, string> = {
   linear: "linear",
   outline: "outline",
   broken: "broken",

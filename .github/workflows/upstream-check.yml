@@ -28,3 +28,21 @@ jobs:
       # installing the app's dependencies would be pure latency.
       - name: Check category names
         run: npm run check:categories
+
+  meanings:
+    name: Icon meanings still match Iconify
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+
+      # Node 22 for --experimental-strip-types: the check imports
+      # lib/icon-meanings.ts directly, without a build step.
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      # Fails if a whole-icon entry names an icon Solar no longer has; also
+      # lists icons that still have no meaning, for the next sync.
+      - name: Check icon meanings
+        run: npm run check:meanings

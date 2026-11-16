@@ -95,8 +95,23 @@ export function SiteHeader({ total, categories, order }: Props) {
         {/* Spacer for mobile so right buttons flush right ---------------- */}
         <div className="flex-1 md:hidden" />
 
-        {/* Right action group: Docs · Search · Theme --------------------- */}
+        {/* Right action group: MCP · Docs · Search · Theme --------------------- */}
         <div className="flex items-center gap-1 sm:gap-1.5 shrink-0">
+          {/* Hidden on phones, where it pushed the theme toggle off-screen;
+              the categories sheet links to /mcp instead. */}
+          <Link
+            href="/mcp"
+            className={cn(
+              "hidden sm:inline-flex h-9 items-center justify-center rounded-md px-3",
+              "text-[13px] font-medium tracking-wide uppercase",
+              "text-muted-foreground hover:text-foreground hover:bg-muted",
+              "transition-colors",
+              "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1",
+            )}
+          >
+            MCP
+          </Link>
+
           <Link
             href="/docs"
             className={cn(

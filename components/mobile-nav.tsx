@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import { Icon } from "@iconify/react";
 import { cn } from "@/lib/utils";
 import { useStore } from "@/lib/store";
@@ -81,6 +82,18 @@ export function MobileNav({ categories, order, total }: Props) {
               count={categories[cat].length}
             />
           ))}
+        </div>
+        {/* The header drops its MCP link on phones to make room. */}
+        <div className="border-t border-border/60 p-3">
+          <Link
+            href="/mcp"
+            onClick={() => setOpen(false)}
+            className="flex w-full items-center gap-2.5 rounded-lg px-3 py-2.5 text-sm text-muted-foreground hover:bg-muted hover:text-foreground transition-all"
+          >
+            <Icon icon="solar:magic-wand-bold-duotone" className="h-5 w-5 shrink-0" />
+            <span className="flex-1 text-left">MCP for AI tools</span>
+            <Icon icon="solar:alt-arrow-right-linear" className="h-4 w-4 shrink-0" />
+          </Link>
         </div>
       </SheetContent>
     </Sheet>

@@ -30,6 +30,7 @@ Companion to the [`solar_iconkit`](https://pub.dev/packages/solar_iconkit) Flutt
   - **Download**: SVG, PNG (multiple sizes), JPG, WebP, and a ZIP bundle
 - **Preview in context** strip — see the icon inside a button, list tile, tag, and empty state so you know how it lands in a real UI.
 - **Docs page** at `/docs` — Flutter installation, widget API reference, style guide, and naming rules.
+- **MCP server** at `/api/mcp` (setup on `/mcp`) — AI coding tools find icons by purpose ("delete account", "more options") instead of guessing names, and get `SolarIcon` code checked against the latest `solar_iconkit` release. Meanings live in `lib/icon-meanings.ts`; `npm run check:meanings` validates them against Iconify.
 - **Responsive** — mobile-first layout with a dedicated style drawer and centered brand.
 - **Light / dark theme** with system preference sync (`next-themes`).
 - **PWA-ready** — installable web manifest, custom favicon, and offline-friendly caching.
