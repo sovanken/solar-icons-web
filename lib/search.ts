@@ -293,7 +293,7 @@ const ALIAS_RANK_STEP = 5;
 /// Splits a query into lowercase words. Treats spaces, hyphens, underscores
 /// and punctuation alike so "arrow right", "arrow-right" and "Arrow_Right"
 /// are the same query.
-function queryWords(s: string): string[] {
+export function queryWords(s: string): string[] {
   return s
     .toLowerCase()
     .split(/[^a-z0-9]+/)
@@ -302,7 +302,7 @@ function queryWords(s: string): string[] {
 
 /// Icon names are stable, so their word split is cached across keystrokes.
 const wordCache = new Map<string, string[]>();
-function nameWords(name: string): string[] {
+export function nameWords(name: string): string[] {
   let w = wordCache.get(name);
   if (!w) {
     w = name.split("-").filter(Boolean);
@@ -375,7 +375,7 @@ function withinEditDistance(a: string, b: string, max: number): boolean {
 }
 
 /// Scores one query word against one icon. 0 means no match at all.
-function scoreWord(name: string, ws: string[], token: string): number {
+export function scoreWord(name: string, ws: string[], token: string): number {
   if (name === token) return S_NAME_EXACT;
   if (ws.includes(token)) return S_WORD_EXACT;
   if (name.startsWith(token)) return S_NAME_PREFIX;
