@@ -1418,7 +1418,20 @@ expect(widget.style ?? SolarIconTheme.of(context), SolarIconStyle.linear);`}
                   <strong>Minor bumps</strong> — new optional widget
                   parameters, new icons pulled from Solar upstream. An upstream
                   rename keeps the old name as a deprecated constant that
-                  resolves to the new one, so it is never breaking.
+                  resolves to the new one, so it is never breaking. Solar
+                  sometimes redraws existing icons too, and those land in
+                  minor releases: 2.1.0 added 125 icons and picked up new
+                  artwork for 120 existing ones (listed in the{" "}
+                  <a
+                    href="https://pub.dev/packages/solar_iconkit/changelog"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-primary underline underline-offset-2"
+                  >
+                    changelog
+                  </a>
+                  ). Pin an exact version if you need the artwork to stay
+                  fixed.
                 </li>
                 <li>
                   <strong>Major bumps</strong> — breaking API changes. 2.0.0
