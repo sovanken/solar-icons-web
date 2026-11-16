@@ -75,6 +75,8 @@ export function IconDialog() {
   // Empty until the fetch for *this* name lands, so switching style or icon
   // cannot briefly show the previous icon's source.
   const svgSource = loaded?.name === iconName ? loaded.svg : "";
+  // The fetch for this name finished but produced nothing usable.
+  const loadFailed = loaded?.name === iconName && loaded.svg === "";
 
   const copyPayloads = useMemo<Record<CopyKind, string>>(() => {
     if (!svgSource || !selected) return {} as Record<CopyKind, string>;
@@ -368,7 +370,11 @@ export function IconDialog() {
 
             <TabsContent value="source" className="mt-4">
               <pre className="max-h-64 overflow-auto rounded-xl border border-border bg-muted/40 p-4 font-mono text-[11px] leading-relaxed text-muted-foreground whitespace-pre-wrap break-all">
-                {ready ? svgSource : "Loading…"}
+                {ready
+                  ? svgSource
+                  : loadFailed
+                    ? "Couldn't load this icon's SVG from Iconify. Close the dialog and try again."
+                    : "Loading…"}
               </pre>
               {ready && (
                 <div className="mt-2 flex items-center gap-2 text-[11px] text-muted-foreground">
