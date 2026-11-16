@@ -6,7 +6,8 @@
 /// whose drawing merely moved to another name are excluded, since they were
 /// already browsable under their old name.
 ///
-/// When syncing a new release, prepend an entry. Names that no longer exist
+/// When syncing a new release, prepend an entry; only the first entry counts
+/// as "new" in the UI. Names that no longer exist
 /// upstream are filtered out at render time, so a stale entry degrades to
 /// fewer icons rather than to broken tiles.
 export interface IconRelease {
@@ -387,20 +388,12 @@ export const ICON_RELEASES: IconRelease[] = [
   },
 ];
 
-/// Every name across all recorded releases, newest first, de-duplicated.
-export const NEW_ICON_NAMES: string[] = (() => {
-  const seen = new Set<string>();
-  const out: string[] = [];
-  for (const release of ICON_RELEASES) {
-    for (const name of release.icons) {
-      if (!seen.has(name)) {
-        seen.add(name);
-        out.push(name);
-      }
-    }
-  }
-  return out;
-})();
+/// The current release's icons: what the New view, its count and the "new"
+/// badge show. Older entries stay in ICON_RELEASES as a record but are no
+/// longer "new" once a later release ships.
+export const LATEST_RELEASE: IconRelease = ICON_RELEASES[0];
+
+export const NEW_ICON_NAMES: string[] = [...new Set(LATEST_RELEASE.icons)];
 
 /// Which release introduced `base`, or undefined if it predates the record.
 export function releaseOf(base: string): IconRelease | undefined {

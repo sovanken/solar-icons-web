@@ -6,7 +6,7 @@ import { useStore } from "@/lib/store";
 import { Icon } from "@iconify/react";
 import { CATEGORY_ICONS, FALLBACK_CATEGORY_ICON } from "@/lib/categories";
 import { useFavorites } from "@/lib/favorites";
-import { NEW_ICON_NAMES } from "@/lib/whats-new";
+import { LATEST_RELEASE, NEW_ICON_NAMES } from "@/lib/whats-new";
 import { fuzzyFilter } from "@/lib/search";
 
 interface Props {
@@ -72,7 +72,7 @@ export function Sidebar({ categories, order, total }: Props) {
           active={activeCategory === "__new__"}
           onClick={() => setActiveCategory("__new__")}
           icon="solar:stars-bold-duotone"
-          label="New"
+          label={`New in ${LATEST_RELEASE.version}`}
           count={matches ? matches.fresh : NEW_ICON_NAMES.length}
           accent="text-emerald-500"
         />

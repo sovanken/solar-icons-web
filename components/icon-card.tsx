@@ -10,7 +10,7 @@ interface Props {
   suffix: string;
   onClick: (base: string, category: string) => void;
   focused?: boolean;
-  /// Shipped in one of the releases recorded in lib/whats-new.ts.
+  /// Shipped in the current release recorded in lib/whats-new.ts.
   isNew?: boolean;
 }
 
