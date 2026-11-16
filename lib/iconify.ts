@@ -34,8 +34,14 @@ export async function fetchCollection(): Promise<CollectionData> {
   return { categories: cats, order, total };
 }
 
+/// `fullName` is an Iconify id such as "solar:home-2-linear". The API serves
+/// it at /solar/home-2-linear.svg; the /solar:home-2-linear.svg form 404s.
 export async function fetchIconSvg(fullName: string): Promise<string> {
-  const resp = await fetch(`${API}/${fullName}.svg`);
+  const [prefix, name] = fullName.split(":");
+  if (!prefix || !name) throw new Error(`Not an Iconify id: ${fullName}`);
+  const resp = await fetch(
+    `${API}/${encodeURIComponent(prefix)}/${encodeURIComponent(name)}.svg`,
+  );
   if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
   return resp.text();
 }
