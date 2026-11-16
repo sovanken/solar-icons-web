@@ -13,10 +13,10 @@ export function StructuredData() {
     applicationCategory: "DeveloperApplication",
     operatingSystem: "Android, iOS, macOS, Windows, Linux, Web",
     description:
-      "A Flutter package that bundles the entire Solar icon set — 1,451 icons across 6 native styles behind a single type-safe SolarIcon widget. MIT-licensed, works offline.",
+      "A Flutter package that bundles the entire Solar icon set — 1,576 icons across 6 native styles behind a single type-safe SolarIcon widget. MIT-licensed, works offline.",
     url: SITE_URL,
     downloadUrl: "https://pub.dev/packages/solar_iconkit",
-    softwareVersion: "2.0.0",
+    softwareVersion: "2.1.0",
     author: {
       "@type": "Person",
       name: "sovanken",
@@ -39,7 +39,7 @@ export function StructuredData() {
     name: "Solar Iconkit — Icon Browser",
     url: SITE_URL,
     description:
-      "Interactive browser for the Solar icon set. Search 1,451 icons across 6 native styles and copy Flutter widget code.",
+      "Interactive browser for the Solar icon set. Search 1,576 icons across 6 native styles and copy Flutter widget code.",
     publisher: {
       "@type": "Person",
       name: "sovanken",
